@@ -46,6 +46,19 @@
       </div>
     {% endif %}
 </div>
+{% for com in comment %}
+{{com.body}}
+{% endfor %}
+{% if form %}
+<form action="" method="post">
+    {{ form.hidden_tag() }}
+    <p>
+        Add comment: <br>
+        {{ form.body }}<br>
+    </p>
+    <p>{{ form.submit() }}</p>
+</form>
+{% endif %}
 
 {% if cast %}
 <h3 class="my-4">Cast</h3>

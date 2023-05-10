@@ -25,6 +25,7 @@ class Post(db.Model):
   body = db.Column(db.Text)
   created = db.Column(db.DateTime, index=True, default=datetime.utcnow)
   user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+  movie_id = db.Column(db.Integer, index=True)
 
   def __str__(self):
       return f"<Post {self.id} {self.body[:50]} ...>"
