@@ -89,32 +89,6 @@ def live():
     today=datetime.date.today()
     return render_template("live.html",movies=movies, today=today)
 
-@app.route("/favorites/add", methods=['POST'])
-def add_to_favorites():
-    data = request.form
-    movie_id = data.get('movie_id')
-    movie_title = data.get('movie_title')
-    if movie_id in FAVORITES:
-        FAVORITES.remove(movie_id)
-        flash(f'Movie: "{movie_title}" remove from favorites!')
-        return redirect(request.referrer)
-    if movie_id and movie_title:
-        FAVORITES.add(movie_id)
-        flash(f'Movie: "{movie_title}" added to favorites!')
-        return redirect(request.referrer)
-
-
-@app.route("/favorites")
-def show_favorites():
-    if FAVORITES:
-        movies = []
-        for movie_id in FAVORITES:
-            movie_details = tmdb_client.get_single_movie(movie_id)
-            movies.append(movie_details)
-    else:
-        movies = []
-    return render_template("favorites.html", movies=movies)
-
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -158,7 +132,8 @@ def login():
 @login_required
 def user(username):
   user = User.query.filter_by(username=username).first_or_404()
-  return render_template('user.html', user=user)
+  comment = Post.query.filter_by(user_id=user.id).all()
+  return render_template('user.html', user=user, comment=comment)
 
 @app.route("/logout")
 @login_required

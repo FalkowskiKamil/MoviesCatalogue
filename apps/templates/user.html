@@ -2,8 +2,23 @@
 
 {% block content %}
 {% if current_user.is_authenticated %}
-  Hi {{ current_user.username }}!
-  
+  <h1>Hi {{ current_user.username }}!</h1>
+
+  <h2>This is a list of youre all post:</h2>
+  <table class="table">
+<tr>
+  <th>Post</th>
+  <th>Movie</th>
+  <th>Date</th>
+</tr>
+{% for com in comment %}
+<tr>
+  <td>""{{com.body}}""</td>
+  <td><a href="/movie/{{com.movie_id}}">{{com.movie_id}}</a></td>
+  <td>{{com.created}}</td>
+</tr>
+{% endfor %}
+  </table>
 {% endif %}
 
 {% endblock %}
