@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField
-from wtforms.validators import DataRequired, Email, EqualTo
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, IntegerField, TextAreaField
+from wtforms.validators import DataRequired, Email, EqualTo, NumberRange
+from wtforms.widgets import RangeInput
 
 class RegistrationForm(FlaskForm):
   username = StringField('Username', validators=[DataRequired()])
@@ -16,5 +17,9 @@ class LoginForm(FlaskForm):
   submit = SubmitField('Login')
 
 class PostForm(FlaskForm):
-  body = StringField('Body', validators=[DataRequired()])
+  body = TextAreaField('Body', validators=[DataRequired()])
   submit = SubmitField('Post')
+
+class RateForm(FlaskForm):
+  rate = IntegerField('Rate', validators=[DataRequired(), NumberRange(min=1, max=10)], widget= RangeInput(step=1), description='[1-2-3-4-5-6-7-8-9-10]')
+  submit = SubmitField('Add Rate')

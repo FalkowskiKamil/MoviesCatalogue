@@ -1,7 +1,7 @@
 from flask import render_template, request, redirect, flash, url_for
 from apps import app, tmdb_client, db, login_manager
-from apps.models import User, Post
-from apps.forms import RegistrationForm, LoginForm, PostForm
+from apps.models import User, Post, Rating
+from apps.forms import RegistrationForm, LoginForm, PostForm, RateForm
 from apps import tmdb_client
 from flask_login import login_required, login_user, logout_user, current_user
 from random import shuffle
@@ -43,18 +43,38 @@ def movie_details(movie_id):
     details = tmdb_client.get_single_movie(movie_id)
     cast = tmdb_client.get_single_movie_cast(movie_id)
     form = PostForm(csrf_enabled=False)
+    form2 = RateForm(csrf_enabled=False)
     if request.method == 'POST':  
-        if form.validate_on_submit():
-            post= Post(
-            body = form.body.data,
-            user_id = current_user.id,
-            movie_id = movie_id
-            )
-            db.session.add(post)
-            db.session.commit()
-            flash(f'Succesfully added post!')
+        if 'rate' in request.form:
+            if form2.validate_on_submit():
+                rate = Rating(
+                    rate = form2.rate.data,
+                    user_id = current_user.id,
+                    movie_id = movie_id
+                )
+                db.session.add(rate)
+                db.session.commit()
+                flash(f'Succesfully added rate!')
+        else:
+            flash(f'{request.form.items()}')
+            if form.validate_on_submit():
+                post= Post(
+                body = form.body.data,
+                user_id = current_user.id,
+                movie_id = movie_id
+                )
+                db.session.add(post)
+                db.session.commit()
+                flash(f'Succesfully added post!')
+
     comment=[]
     comment = Post.query.filter_by(movie_id=movie_id).all()
+    rate = Rating.query.filter_by(movie_id=movie_id).all()
+    if rate:
+        mean = [x.rate for x in rate]
+        mean = sum(mean)/len(mean)
+    else:
+        mean=[]
     if cast == None:
         cast = []
     else: 
@@ -68,7 +88,7 @@ def movie_details(movie_id):
     fav=False
     if movie_id in FAVORITES:
         fav=True
-    return render_template("movie_details.html", movie=details, cast=cast, selected_backdrop=selected_backdrop, fav=fav, form=form, comment=comment)
+    return render_template("movie_details.html",mean=mean, movie=details,rate = rate, cast=cast, selected_backdrop=selected_backdrop, fav=fav, form=form, form2 = form2, comment=comment)
 
 @app.route("/search")
 def search():

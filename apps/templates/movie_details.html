@@ -1,6 +1,27 @@
 {% extends "index.html" %}
 
 {% block content %}
+{% if form2 %}
+
+<form id='rate-form' action='' method='post'>
+<div class="form-group border">
+    {{ form2.hidden_tag() }}
+    <div class="form-row">
+        <div class="col-10">
+            {{ form2.rate }}
+            <div class="col-10 ">
+                {{ form2.rate.description }}
+            </div>
+        </div>
+        <div class="col">
+    {{ form2.submit() }}
+    </div>
+
+</div>
+</div>
+</form>
+{% endif %}
+
 <div class="container">
 
     {% if movie.title %}
@@ -24,7 +45,9 @@
                 <dd>{% for genre in movie.genres %}{{ genre.name }}, {% endfor %}</dd>
                 </dl>
                 <dt>Rating</dt>
-                <dd>{{movie.vote_average|round(2,'floor') }} / 10 ({{movie.vote_count}} vote)</dd>
+                <dd>{{movie.vote_average|round(2,'floor') }} / 10 ({{movie.vote_count}} vote TMDB)</dd>
+                {% if mean %}<dd>{{mean}} / 10 ({{rate|length}} vote MC) </dd>{% endif %}
+            </dl>
             </div>
     </div>
     {% else %}
@@ -53,15 +76,19 @@
 
 {% endfor %}
 {% endif %}
-
-<div class="border">
-    
+</div>
+<div class="row">
+    <dl>
     {% for com in comment %}
-        <h1 class="my-4">{{com.body}} </h1>
-        <p>autor: {{com.author.username}} on {{com.created}}</p>
-    
-    {% endfor %}
+    <div class="border">
+        <dd><a href="">{{com.body}}</a> </dd>
+        <dt><a href="">autor: {{com.author.username}}</a> on {{com.created}}</dt>
     </div>
+    {% endfor %}
+</dl>
+    </div>
+    {% if current_user.is_authenticated %}
+
     {% if form %}
     <form action="" method="post">
         {{ form.hidden_tag() }}
@@ -72,6 +99,7 @@
         <p>{{ form.submit() }}</p>
     </form>
     {% endif %}
-</div>
+    {% endif %}
+
 </div>
 {% endblock %}
