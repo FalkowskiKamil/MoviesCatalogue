@@ -56,7 +56,6 @@ def movie_details(movie_id):
                 db.session.commit()
                 flash(f'Succesfully added rate!')
         else:
-            flash(f'{request.form.items()}')
             if form.validate_on_submit():
                 post= Post(
                 body = form.body.data,
@@ -69,7 +68,10 @@ def movie_details(movie_id):
 
     comment=[]
     comment = Post.query.filter_by(movie_id=movie_id).all()
+    rate=[]
     rate = Rating.query.filter_by(movie_id=movie_id).all()
+    user_rate=[]
+    user_rate = Rating.query.filter_by(movie_id=movie_id, user_id = current_user.id)
     if rate:
         mean = [x.rate for x in rate]
         mean = sum(mean)/len(mean)
@@ -88,7 +90,7 @@ def movie_details(movie_id):
     fav=False
     if movie_id in FAVORITES:
         fav=True
-    return render_template("movie_details.html",mean=mean, movie=details,rate = rate, cast=cast, selected_backdrop=selected_backdrop, fav=fav, form=form, form2 = form2, comment=comment)
+    return render_template("movie_details.html",mean=mean, movie=details,rate = rate, user_rate=user_rate, cast=cast, selected_backdrop=selected_backdrop, fav=fav, form=form, form2 = form2, comment=comment)
 
 @app.route("/search")
 def search():
@@ -153,7 +155,8 @@ def login():
 def user(username):
   user = User.query.filter_by(username=username).first_or_404()
   comment = Post.query.filter_by(user_id=user.id).all()
-  return render_template('user.html', user=user, comment=comment)
+  rates = Rating.query.filter_by(user_id=user.id).all()
+  return render_template('user.html', user=user, comment=comment, rates=rates)
 
 @app.route("/logout")
 @login_required

@@ -3,7 +3,23 @@
 {% block content %}
 {% if current_user.is_authenticated %}
   <h1>Hi {{ current_user.username }}!</h1>
-
+  <h2>This is a list of all youre rate:</h2>
+  <table class="table">
+    <thead>
+    <tr>
+      <th>Rate</th>
+      <th>Movie</th>
+    </tr>
+    </thead>
+    <tbody>
+      {% for x in rates %}
+      <tr>
+        <td>{{x.rate}}</td>
+        <td><a href="/movie/{{x.movie_id}}">{{x.movie_id}}</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
   <h2>This is a list of youre all post:</h2>
   <table class="table">
 <tr>

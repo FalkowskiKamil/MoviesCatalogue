@@ -34,6 +34,9 @@ class Post(db.Model):
 class Rating(db.Model):
   id = db.Column(db.Integer, primary_key = True)
   rate = db.Column(db.Integer, index = True)
-  user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+  user_id = db.Column(db.Integer, db.ForeignKey('user.id'), index=True)
   movie_id = db.Column(db.Integer, index=True)
+
+  def __str__(self):
+     return f'<Rate {self.rate}, by {self.user_id}>'
 
