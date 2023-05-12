@@ -71,7 +71,8 @@ def movie_details(movie_id):
     rate=[]
     rate = Rating.query.filter_by(movie_id=movie_id).all()
     user_rate=[]
-    user_rate = Rating.query.filter_by(movie_id=movie_id, user_id = current_user.id)
+    if current_user.is_authenticated:
+        user_rate = Rating.query.filter_by(movie_id=movie_id, user_id = current_user.id)
     if rate:
         mean = [x.rate for x in rate]
         mean = sum(mean)/len(mean)

@@ -26,7 +26,8 @@
                 <dd>{{movie.vote_average|round(2,'floor') }} / 10 ({{movie.vote_count}} vote TMDB)</dd>
                 {% if mean %}<dd>{{mean|round(2,'floor')}} / 10 ({{rate|length}} vote MC) </dd>{% endif %}
                 {% if form2 %}
-                {% if (user_rate.all()|length)==0 %}
+                {% if current_user.is_authenticated %}
+                    {% if (user_rate.all()|length)==0 %}
              
                 <form id='rate-form' action='' method='post'>
                     <dl>
@@ -34,8 +35,8 @@
                     {{ form2.hidden_tag() }}
                     <div class="form-row">
                         <div class="slider d-flex align-items-center">
-                            {{ form2.rate(class="range", list="tickmarks",default=6, oninput="rangeValue.innerText = this.value") }}
-                            <datalist default='6' id="tickmarks">
+                            {{ form2.rate(class="range", list="tickmarks", oninput="rangeValue.innerText = this.value") }}
+                            <datalist id="tickmarks">
                                 {% for i in range(1, 11) %}
                                     <option value="{{ i }}" label="{{ i }}">{{ i }}</option>
                                 {% endfor %}
@@ -43,7 +44,7 @@
                         </div>
                     </div>
                     <div class="form-row d-flex justify-content-center">
-                        <p value="6" id="rangeValue">1</p>
+                        <p value="6" id="rangeValue">6</p>
                     </div>
                         <div class="d-flex justify-content-end">
                         {{form2.submit()}}
@@ -52,11 +53,12 @@
                     </div>
                 </dl>
                 </form>
-                {% else %}
+                    {% else %}
                 <dl>
                     <dt>Youre rate:</dt>
                     <dd>{{ user_rate.first().rate }}</dd>
                 </dl>
+                {% endif %}
                 {% endif %}
                 {% endif %}
             </div>
@@ -84,7 +86,6 @@
                 <figcaption class="figure-caption">{{ actor.name }} as {{ actor.character }}</figcaption>
             </figure>
     </div>
-
 {% endfor %}
 {% endif %}
 </div>
@@ -92,14 +93,15 @@
     <dl>
     {% for com in comment %}
     <div class="border">
-        <dd><a href="">{{com.body}}</a> </dd>
-        <dt><a href="">autor: {{com.author.username}}</a> on {{com.created}}</dt>
+        <dd><a href="">{{com.body}}</a></dd>
+        <dt> {% for x in com.author.rate.all() %}{% if movie.id == x.movie_id %}  
+            {{x.rate}} / 10
+        {% endif %}{% endfor %}<a href="">autor: {{com.author.username}}</a> on {{com.created}}</dt>
     </div>
     {% endfor %}
 </dl>
     </div>
     {% if current_user.is_authenticated %}
-
     {% if form %}
     <form action="" method="post">
         {{ form.hidden_tag() }}

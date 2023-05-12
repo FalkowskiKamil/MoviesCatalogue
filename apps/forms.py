@@ -21,5 +21,5 @@ class PostForm(FlaskForm):
   submit = SubmitField('Post')
 
 class RateForm(FlaskForm):
-  rate = IntegerRangeField('Rate', validators=[DataRequired(), NumberRange(min=1, max=10)])
+  rate = IntegerRangeField('Rate', validators=[DataRequired(), NumberRange(min=1, max=10)], default='6')
   submit = SubmitField('Add Rate')
