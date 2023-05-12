@@ -27,6 +27,7 @@ class Post(db.Model):
   created = db.Column(db.DateTime, index=True, default=datetime.utcnow)
   user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
   movie_id = db.Column(db.Integer, index=True)
+  comment = db.relationship("PostComment", backref="topic", lazy='dynamic')
 
   def __str__(self):
       return f"<Post {self.id} {self.body[:50]} ...>"
@@ -39,4 +40,11 @@ class Rating(db.Model):
 
   def __str__(self):
      return f'<Rate {self.rate}, by {self.user_id}>'
+  
+class PostComment(db.Model):
+  id=db.Column(db.Integer, primary_key=True)
+  body = db.Column(db.Text)
+  created = db.Column(db.DateTime, index= True, default = datetime.utcnow)
+  user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+  post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
 

@@ -1,0 +1,25 @@
+{% extends "index.html" %}
+{% block content %}
+<h1>Post by <a href="{{url_for('user', username=post.author.username)}}">{{post.author.username}}</a> </h1>
+<div class="container border">
+<p class="border">{{post.body}}</p>
+<h2>About movie: <a href="{{ url_for('movie_details', movie_id=post.movie_id)}}">{{tittle_from_id(post.movie_id)}}</a>, created on {{post.created}}</h2>
+</div>
+
+<div class="container border">
+{% for com in comment %}
+<p>{{com.body}}</p>
+<p>author: <a href="{{url_for('user', username=com.user_id)}}">{{com.user_id}}</a></p>
+{% endfor %}
+</div>
+{% if current_user.is_authenticated %}
+<form action="" method="post">
+    {{ form.hidden_tag() }}
+    <p>
+        Add comment: <br>
+        {{ form.body }}<br>
+    </p>
+    <p>{{ form.submit() }}</p>
+</form>
+{% endif %}
+{% endblock %}

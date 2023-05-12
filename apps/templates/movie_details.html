@@ -87,20 +87,19 @@
             </figure>
     </div>
 {% endfor %}
-{% endif %}
 </div>
 <div class="row">
     <dl>
     {% for com in comment %}
     <div class="border">
-        <dd><a href="">{{com.body}}</a></dd>
+        <dd style="max-width: 60vw; overflow: hidden;"><a href="/post/{{com.id}}">{{com.body}}</a></dd>
         <dt> {% for x in com.author.rate.all() %}{% if movie.id == x.movie_id %}  
             {{x.rate}} / 10
-        {% endif %}{% endfor %}<a href="">autor: {{com.author.username}}</a> on {{com.created}}</dt>
+        {% endif %}{% endfor %}<a href="{{ url_for('user', username=com.author.username) }}">autor: {{com.author.username}}</a> on {{com.created}}</dt>
     </div>
     {% endfor %}
 </dl>
-    </div>
+</div>
     {% if current_user.is_authenticated %}
     {% if form %}
     <form action="" method="post">
@@ -115,4 +114,6 @@
     {% endif %}
 
 </div>
+{% endif %}
+
 {% endblock %}
