@@ -153,7 +153,6 @@ def login():
   return render_template('login.html', form=form)
 
 @app.route('/user/<username>')
-@login_required
 def user(username):
   user = User.query.filter_by(username=username).first_or_404()
   comment = Post.query.filter_by(user_id=user.id).all()
@@ -185,7 +184,10 @@ def post(post_id):
     comment = PostComment.query.filter_by(post_id=post_id).all()
     return render_template("post.html", post=post, comment=comment, form=form)
 
-@app.route('/movie_post/<movie_id>')
-def movie_post(movie_id):
-    post= Post.query.filter_by(movie_id=movie_id).all()   
+@app.route('/movie_post/<movie_id>/<user_id>')
+def movie_post(movie_id, user_id):
+    if movie_id=='0':
+        post= Post.query.filter_by(user_id=user_id).all()
+    else:
+        post= Post.query.filter_by(movie_id=movie_id).all()
     return render_template("movie_post.html", post=post)
