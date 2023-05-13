@@ -37,14 +37,27 @@ def movie_details(movie_id):
     if request.method == 'POST':  
         if 'rate' in request.form:
             if form2.validate_on_submit():
-                rate = Rating(
-                    rate = form2.rate.data,
-                    user_id = current_user.id,
-                    movie_id = movie_id
-                )
-                db.session.add(rate)
-                db.session.commit()
-                flash(f'Succesfully added rate!')
+                existing_rating = Rating.query.filter_by(movie_id=movie_id, user_id=current_user.id).first()
+                if existing_rating:
+                    # Update the user's existing rating
+                    existing_rating.rate = form2.rate.data
+                    try:
+                        db.session.commit()
+                        flash('Your rating has been updated!', 'success')
+                    except Exception as e:
+                        print('Error committing rating update:', e)
+                        db.session.rollback()
+                        flash('There was an error updating your rating. Please try again later.', 'danger')
+                else:
+                    # Create a new rating for the user
+                    rating = Rating(
+                        rate=form2.rate.data,
+                        user_id=current_user.id,
+                        movie_id=movie_id
+                    )
+                    db.session.add(rating)
+                    db.session.commit()
+                    flash(f'Successfully added rate!')
         else:
             if form.validate_on_submit():
                 post= Post(
@@ -114,7 +127,7 @@ def login():
   form = LoginForm(csrf_enabled=False)
   if form.validate_on_submit():
     # query User here:
-    user = User.query.filter_by(email=form.email.data).first()
+    user = User.query.filter_by(username=form.username.data).first()
     # check if a user was found and the form password matches here:
     if user and user.check_password(form.password.data):
       # login user here:
@@ -158,3 +171,8 @@ def post(post_id):
             flash(f'Succesfully added comment!')
     comment = PostComment.query.filter_by(post_id=post_id).all()
     return render_template("post.html", post=post, comment=comment, form=form)
+
+@app.route('/movie_post/<movie_id>')
+def movie_post(movie_id):
+    post= Post.query.filter_by(movie_id=movie_id).all()   
+    return render_template("movie_post.html", post=post)

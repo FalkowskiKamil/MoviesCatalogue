@@ -9,7 +9,7 @@
 <div class="container border">
 {% for com in comment %}
 <p>{{com.body}}</p>
-<p>author: <a href="{{url_for('user', username=com.user_id)}}">{{com.user_id}}</a></p>
+<p>author: <a href="{{url_for('user', username=com.commentator.username)}}">{{com.commentator.username}}</a></p>
 {% endfor %}
 </div>
 {% if current_user.is_authenticated %}

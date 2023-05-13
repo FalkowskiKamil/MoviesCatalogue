@@ -27,7 +27,6 @@
                 {% if mean %}<dd>{{mean|round(2,'floor')}} / 10 ({{rate|length}} vote MC) </dd>{% endif %}
                 {% if form2 %}
                 {% if current_user.is_authenticated %}
-                    {% if (user_rate.all()|length)==0 %}
              
                 <form id='rate-form' action='' method='post'>
                     <dl>
@@ -35,7 +34,7 @@
                     {{ form2.hidden_tag() }}
                     <div class="form-row">
                         <div class="slider d-flex align-items-center">
-                            {{ form2.rate(class="range", list="tickmarks", oninput="rangeValue.innerText = this.value") }}
+                            {{ form2.rate(class="range", list="tickmarks", value= user_rate.first().rate or 6 , oninput="rangeValue.innerText = this.value") }}
                             <datalist id="tickmarks">
                                 {% for i in range(1, 11) %}
                                     <option value="{{ i }}" label="{{ i }}">{{ i }}</option>
@@ -44,7 +43,7 @@
                         </div>
                     </div>
                     <div class="form-row d-flex justify-content-center">
-                        <p value="6" id="rangeValue">6</p>
+                        <p value="{{user_rate.first().rate}}" id="rangeValue">{{user_rate.first().rate or 6}}</p>
                     </div>
                         <div class="d-flex justify-content-end">
                         {{form2.submit()}}
@@ -53,12 +52,8 @@
                     </div>
                 </dl>
                 </form>
-                    {% else %}
                 <dl>
-                    <dt>Youre rate:</dt>
-                    <dd>{{ user_rate.first().rate }}</dd>
                 </dl>
-                {% endif %}
                 {% endif %}
                 {% endif %}
             </div>
@@ -90,14 +85,25 @@
 </div>
 <div class="row">
     <dl>
-    {% for com in comment %}
-    <div class="border">
-        <dd style="max-width: 60vw; overflow: hidden;"><a href="/post/{{com.id}}">{{com.body}}</a></dd>
-        <dt> {% for x in com.author.rate.all() %}{% if movie.id == x.movie_id %}  
-            {{x.rate}} / 10
-        {% endif %}{% endfor %}<a href="{{ url_for('user', username=com.author.username) }}">autor: {{com.author.username}}</a> on {{com.created}}</dt>
-    </div>
-    {% endfor %}
+        {% for com in comment %}
+            <div class="border">
+                {% if loop.index <= 5 %}
+                    <dd style="max-width: 60vw; overflow: hidden;"><a href="/post/{{com.id}}">{{com.body}}</a></dd>
+                    <dt>
+                        {% for x in com.author.rate.all() %}
+                            {% if movie.id == x.movie_id %}  
+                                {{x.rate}} / 10
+                            {% endif %}
+                        {% endfor %}
+                        <a href="{{ url_for('user', username=com.author.username) }}">autor: {{com.author.username}}</a> on {{com.created}}
+                    </dt>
+                {% elif loop.index == 6 %}
+                <a href="{{ url_for('movie_post', movie_id=movie.id) }}"> and {{ (comment|length)-5 }} more..</a>
+                {% endif %}
+            </div>
+        {% endfor %}
+
+        
 </dl>
 </div>
     {% if current_user.is_authenticated %}
@@ -105,7 +111,7 @@
     <form action="" method="post">
         {{ form.hidden_tag() }}
         <p>
-            Add comment: <br>
+            Add post: <br>
             {{ form.body }}<br>
         </p>
         <p>{{ form.submit() }}</p>
