@@ -27,3 +27,6 @@ class RateForm(FlaskForm):
 class CommentForm(FlaskForm):
   body = TextAreaField('Body', validators=[DataRequired()])
   submit = SubmitField('Comment')
+
+class FavoriteForm(FlaskForm):
+  favorite = SubmitField('Favorite')

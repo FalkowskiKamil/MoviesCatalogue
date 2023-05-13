@@ -2,6 +2,13 @@
 
 {% block content %}
 
+<h1>Youre favorite list:</h1>
+{% for x in fav %}
+  {% if x.status==True %}
+  <a href="{{url_for('movie_details', movie_id=x.movie_id)}}">{{tittle_from_id(movie_id=x.movie_id)}}</a>
+  {% endif %}
+{% endfor %}
+
 
   <h1>Profile: {{ user.username }}!</h1>
   <h2>All rate:</h2>

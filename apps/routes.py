@@ -1,7 +1,7 @@
 from flask import render_template, request, redirect, flash, url_for
 from apps import app, tmdb_client, db, login_manager
-from apps.models import User, Post, Rating, PostComment
-from apps.forms import RegistrationForm, LoginForm, PostForm, RateForm, CommentForm
+from apps.models import User, Post, Rating, PostComment, Favorite
+from apps.forms import RegistrationForm, LoginForm, PostForm, RateForm, CommentForm, FavoriteForm
 from apps import tmdb_client
 from flask_login import login_required, login_user, logout_user, current_user
 from random import shuffle
@@ -26,7 +26,6 @@ def utility_processor():
         return tmdb_client.get_single_movie(movie_id)['original_title']
     return {"tmdb_image_url": tmdb_image_url, "tittle_from_id": title_from_id}
 
-
 @app.route("/movie/<movie_id>", methods=['GET', 'POST'])
 def movie_details(movie_id):
     cast,user_rate,mean,rate,comment, selected_backdrop =[[] for _ in range(6)]
@@ -34,6 +33,7 @@ def movie_details(movie_id):
     cast = tmdb_client.get_single_movie_cast(movie_id)
     form = PostForm(csrf_enabled=False)
     form2 = RateForm(csrf_enabled=False)
+    favorite_form = FavoriteForm(csr_enabled=False)
     if request.method == 'POST':  
         if 'rate' in request.form:
             if form2.validate_on_submit():
@@ -58,6 +58,18 @@ def movie_details(movie_id):
                     db.session.add(rating)
                     db.session.commit()
                     flash(f'Successfully added rate!')
+        elif 'favorite' in request.form:
+            if favorite_form.validate_on_submit():
+                favorite = Favorite.query.filter_by(movie_id=movie_id, user_id=current_user.id).first()
+                if favorite is None:
+                    favorite = Favorite(movie_id=movie_id, user_id=current_user.id, status=True)
+                    db.session.add(favorite)
+                    flash(f'Movie added to favorite!')
+                else:
+                    # Toggle the existing favorite status
+                    favorite.status = not favorite.status
+                    flash(f'Movie {favorite.status} in favorite!')
+                db.session.commit()
         else:
             if form.validate_on_submit():
                 post= Post(
@@ -82,7 +94,7 @@ def movie_details(movie_id):
     if movie_images != []:
         selected_backdrop = random.choice(movie_images)
         selected_backdrop=selected_backdrop['file_path']
-    return render_template("movie_details.html",mean=mean, movie=details, rate = rate, user_rate=user_rate, cast=cast, selected_backdrop=selected_backdrop, form=form, form2 = form2, comment=comment)
+    return render_template("movie_details.html",mean=mean, movie=details, rate = rate, user_rate=user_rate, cast=cast, selected_backdrop=selected_backdrop, form=form, form2 = form2,favorite_form=favorite_form, comment=comment)
 
 @app.route("/search")
 def search():
@@ -146,7 +158,8 @@ def user(username):
   user = User.query.filter_by(username=username).first_or_404()
   comment = Post.query.filter_by(user_id=user.id).all()
   rates = Rating.query.filter_by(user_id=user.id).all()
-  return render_template('user.html', user=user, comment=comment, rates=rates)
+  fav = Favorite.query.filter_by(user_id=user.id).all()
+  return render_template('user.html', user=user, comment=comment, rates=rates, fav=fav)
 
 @app.route("/logout")
 @login_required

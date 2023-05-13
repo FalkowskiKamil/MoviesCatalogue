@@ -1,6 +1,12 @@
 {% extends "index.html" %}
 
 {% block content %}
+
+<form id="favorite" action="" method="post">
+{{favorite_form.hidden_tag()}}
+{{ favorite_form.favorite }}
+</form>
+
 <div class="container">
     {% if movie.title %}
    <h1 class="my-4">
