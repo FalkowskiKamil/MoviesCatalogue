@@ -3,7 +3,7 @@
 <h1>Post by <a href="{{url_for('user', username=post.author.username)}}">{{post.author.username}}</a> </h1>
 <div class="container border">
 <p class="border">{{post.body}}</p>
-<h2>About movie: <a href="{{ url_for('movie_details', movie_id=post.movie_id)}}">{{tittle_from_id(post.movie_id)}}</a>, created on {{post.created}}</h2>
+<h2>About movie: <a href="{{ url_for('movie_details', movie_id=post.movie_id)}}">{{movie_from_id(post.movie_id).original_title}}</a>, created on {{post.created}}</h2>
 </div>
 
 <div class="container border">

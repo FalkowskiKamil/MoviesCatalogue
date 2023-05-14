@@ -8,15 +8,12 @@ from random import shuffle
 import random
 import datetime
 
-@app.route('/', methods=["GET"])
+@app.route('/')
 def homepage():
-    movies_list=['now_playing', 'popular', 'top_rated', 'upcoming']
     selected_list=request.args.get('list_type', "popular")
-    if selected_list not in movies_list:
-        selected_list='popular'
     movies = tmdb_client.get_movies(how_many=8, list_type=selected_list)
     shuffle(movies)
-    return render_template("homepage.html", movies=movies, current_list=selected_list, movies_list=movies_list)
+    return render_template("homepage.html", movies=movies, current_list=selected_list)
 
 @app.context_processor
 def utility_processor():
@@ -28,7 +25,6 @@ def utility_processor():
 
 @app.route("/movie/<movie_id>", methods=['GET', 'POST'])
 def movie_details(movie_id):
-    cast,user_rate,mean,rate,comment, selected_backdrop =[[] for _ in range(6)]
     details = tmdb_client.get_single_movie(movie_id)
     cast = tmdb_client.get_single_movie_cast(movie_id)
     form = PostForm(csrf_enabled=False)
@@ -84,6 +80,7 @@ def movie_details(movie_id):
     rate = Rating.query.filter_by(movie_id=movie_id).all()
     if current_user.is_authenticated:
         user_rate = Rating.query.filter_by(movie_id=movie_id, user_id = current_user.id)
+    mean,selected_backdrop=[],[]
     if rate:
         mean = [x.rate for x in rate]
         mean = sum(mean)/len(mean)
@@ -99,14 +96,7 @@ def movie_details(movie_id):
 @app.route("/search")
 def search():
     search_query=request.args.get("q","")
-    if search_query:
-        response=tmdb_client.search_movie(search_query=search_query)
-        if "results" in response:
-            movies=response['results']
-        else:
-            movies=None
-    else:
-        movies=None
+    movies=tmdb_client.search_movie(search_query=search_query)['results']
     return render_template("search.html",movies=movies, search_query=search_query)
 
 @app.route("/live")
@@ -117,7 +107,7 @@ def live():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-  form = RegistrationForm(csrf_enabled=False)
+  form = RegistrationForm()
   if form.validate_on_submit():
     # define user with data from form here:
     user = User(username=form.username.data, email=form.email.data)
@@ -128,7 +118,7 @@ def register():
     flash(f'You`re succesfuly registered!')
     login_user(user=user)
     return redirect(url_for('homepage'))
-  return render_template('register.html', title='Register', form=form)
+  return render_template('register.html', form=form)
 
 @login_manager.user_loader
 def load_user(id):
@@ -136,7 +126,7 @@ def load_user(id):
 
 @app.route('/login', methods=['GET','POST'])
 def login():
-  form = LoginForm(csrf_enabled=False)
+  form = LoginForm()
   if form.validate_on_submit():
     # query User here:
     user = User.query.filter_by(username=form.username.data).first()
@@ -144,25 +134,12 @@ def login():
     if user and user.check_password(form.password.data):
       # login user here:
       login_user(user, remember=form.remember.data)
-      next_page = request.args.get('next')
       flash(f'Login Succesfuly!')
-      return redirect(next_page) if next_page else redirect(url_for('homepage'))
+      return redirect(url_for('homepage'))
     else:
       flash('Something went wrong!')
       return redirect(url_for('homepage'))
   return render_template('login.html', form=form)
-
-@app.route('/user/<username>')
-def user(username):
-  user = User.query.filter_by(username=username).first_or_404()
-  comment= Post.query.filter_by(user_id=user.id).order_by(Post.created.desc()).all()
-  com = [comment[0], len(comment)]
-  rating = Rating.query.filter_by(user_id=user.id).order_by(Rating.rate).all()
-  mean = [x.rate for x in rating]
-  mean = sum(mean)/len(mean)
-  rates = [rating[0], rating[-1], len(rating), mean]
-  fav = len(Favorite.query.filter_by(user_id=user.id, status=True).all())
-  return render_template('user.html', user=user, com=com, rates=rates, fav=fav)
 
 @app.route("/logout")
 @login_required
@@ -170,6 +147,20 @@ def logout():
     logout_user()
     flash(f'You are succesfuly logout!')
     return redirect(url_for('homepage'))
+
+@app.route('/user/<username>')
+def user(username):
+  user = User.query.filter_by(username=username).first_or_404()
+  comment= Post.query.filter_by(user_id=user.id).order_by(Post.created.desc()).all()
+  if comment == True:
+    comment = [comment[0], len(comment)]
+  rating = Rating.query.filter_by(user_id=user.id).order_by(Rating.rate).all()
+  if rating == True:
+    mean = [x.rate for x in rating]
+    mean = sum(mean)/len(mean)
+    rating = [rating[0], rating[-1], len(rating), mean]
+  fav = len(Favorite.query.filter_by(user_id=user.id, status=True).all())
+  return render_template('user.html', user=user, comment=comment, rating=rating, fav=fav)
 
 @app.route('/post/<post_id>',  methods=['GET', 'POST'])
 def post(post_id):
