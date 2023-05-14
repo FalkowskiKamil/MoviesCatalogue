@@ -49,9 +49,9 @@ def live():
     today=datetime.date.today()
     return render_template("live.html",movies=movies, today=today)
 
-@app.route('/user/<username>')
-def user(username):
-  user = User.query.filter_by(username=username).first_or_404()
+@app.route('/user/<user_id>')
+def user(user_id):
+  user = User.query.filter_by(id=user_id).first_or_404()
   comment= Post.query.filter_by(user_id=user.id).order_by(Post.created.desc()).all()
   if comment != None:
     comment = [comment[0], len(comment)]

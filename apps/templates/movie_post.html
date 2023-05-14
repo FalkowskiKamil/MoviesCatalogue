@@ -3,7 +3,7 @@
 {% for posts in post %}
 <div class="container border">
 <a href="{{url_for('post', post_id=posts.id)}}">{{posts.body}}</a>
-by <a href="{{url_for('user', username = posts.author.username)}}">{{posts.author.username}}</a>
+by <a href="{{url_for('user', user_id = posts.author.id)}}">{{posts.author.username}}</a>
 on {{posts.created}}<br>
 Comment: {{posts.comment.all()|length }}
 </div>

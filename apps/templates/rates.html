@@ -5,7 +5,7 @@
 <div class="row">
    <div class="col-lg-12 text-center">
        <h1 class="mt-5">Movie rates by {% for name in movies %}{% if loop.index == 1 %}
-        <a href="{{url_for('user', username=name.reviewer.username)}}">{{name.reviewer.username}}</a>
+        <a href="{{url_for('user', user_id=name.reviewer.id)}}">{{name.reviewer.username}}</a>
     {% endif %}{% endfor %}:</h1>
    </div>
 
