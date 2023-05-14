@@ -12,4 +12,4 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 
-from apps import routes, models, forms
+from apps import routes, models, forms, user_manager, data_manager
