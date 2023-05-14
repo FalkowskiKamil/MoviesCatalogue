@@ -4,10 +4,13 @@
 <h1>Profile: {{ user.username }}!</h1>
 <h2>Created on {{user.joined_at}} </h2>
 
+{% if (favorite|length) %}
 <h1><a href="{{ url_for('favorite', user_id = user.id) }}">List of favorites movies, ({{fav}} movies)</a></h1>
-
-<h2>Rates:</h2>
+{% else %}
+<h1>User not added any movie to favorite list</h1>
+{% endif%}
 {% if (rating|length) >0 %}
+<h2>Rates:</h2>
   <h2><a href="{{url_for('all_rates', user_id=user.id)}}">All rated movie({{rating[2]}})</a></h2>
   <h2>Mean rate: </h2>
 {{rating[3]}}
@@ -15,6 +18,8 @@
   <a href="{{url_for('movie_details', movie_id=rating[1].movie_id) }}">{{ movie_from_id(movie_id=rating[1].movie_id).original_title }}</a> ({{rating[1].rate}}/10)
   <h2>Lowest rated movie </h2>
   <a href="{{url_for('movie_details', movie_id=rating[0].movie_id) }}">{{ movie_from_id(movie_id=rating[0].movie_id).original_title }}</a> ({{rating[0].rate}}/10)
+{% else %}
+<h2>User not added any rating</h2>
 {% endif %}
 
 
@@ -33,5 +38,7 @@
   <td>{{comment[0].created}}</td>
 </tr>
   </table>
+{% else %}
+<h2>User not added any post</h2>
 {% endif %}
 {% endblock %}

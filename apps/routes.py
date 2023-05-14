@@ -1,4 +1,4 @@
-from flask import render_template, request
+from flask import render_template, request, flash
 from apps import app, tmdb_client
 from apps.models import User, Post, Rating, PostComment, Favorite
 from apps.forms import  PostForm, RateForm, CommentForm, FavoriteForm
@@ -53,10 +53,10 @@ def live():
 def user(user_id):
   user = User.query.filter_by(id=user_id).first_or_404()
   comment= Post.query.filter_by(user_id=user.id).order_by(Post.created.desc()).all()
-  if comment != None:
+  if len(comment) > 0:
     comment = [comment[0], len(comment)]
   rating = Rating.query.filter_by(user_id=user.id).order_by(Rating.rate).all()
-  if rating != None:
+  if len(rating)>0:
     mean = [x.rate for x in rating]
     mean = sum(mean)/len(mean)
     rating = [rating[0], rating[-1], len(rating), mean]

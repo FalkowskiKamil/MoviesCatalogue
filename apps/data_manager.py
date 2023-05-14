@@ -1,4 +1,4 @@
-from flask import flash, redirect, url_for
+from flask import flash, redirect, url_for, request
 from apps import app, db
 from apps.forms import  PostForm, RateForm, CommentForm, FavoriteForm
 from apps.models import Post, Rating, PostComment, Favorite
@@ -70,4 +70,9 @@ def add_favorite(movie_id):
             favorite.status = not favorite.status
             flash(f'Movie {favorite.status} in favorite!')
         db.session.commit()
-    return redirect(url_for('movie_details', movie_id=movie_id))
+    referrer = request.referrer
+    if referrer is None:
+        # If no referrer URL is available, redirect to the movie details page
+        return redirect(url_for('movie_details', movie_id=movie_id))
+    else:
+        return redirect(referrer)
