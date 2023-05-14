@@ -4,57 +4,32 @@
 <h1>Profile: {{ user.username }}!</h1>
 <h2>Created on {{user.joined_at}} </h2>
 
-<h1>Youre favorite list:</h1>
-<table class="table">
-  <thead>
-    <tr>
-      <th>Status</th>
-      <th>Movie-title</th>
-    </tr>
-  </thead>
-  <tbody>
-{% for x in fav %}
-  {% if x.status==True %}
-  <tr>
-    <td>{{x.status}}</td>
-  <td><a href="{{url_for('movie_details', movie_id=x.movie_id)}}">{{tittle_from_id(movie_id=x.movie_id)}}</a></td>
-  {% endif %}
-  </tr>
-{% endfor %}
-</tbody>
-</table>
+<h1><a href="{{ url_for('favorite', user_id = user.id) }}">List of favorites movies, ({{fav}} movies)</a></h1>
+
+<h2>Rates:</h2>
+  <h2><a href="{{url_for('all_rates', user_id=user.id)}}">All rated movie({{rates[2]}})</a></h2>
+  <h2>Mean rate: </h2>
+{{rates[3]}}
+  <h2>Highest rated movie:</h2>
+  <a href="{{url_for('movie_details', movie_id=rates[1].movie_id) }}">{{ movie_from_id(movie_id=rates[1].movie_id).original_title }}</a> ({{rates[1].rate}}/10)
+  <h2>Lowest rated movie </h2>
+  <a href="{{url_for('movie_details', movie_id=rates[0].movie_id) }}">{{ movie_from_id(movie_id=rates[0].movie_id).original_title }}</a> ({{rates[0].rate}}/10)
 
 
-  <h2>All rate:</h2>
-  <table class="table">
-    <thead>
-    <tr>
-      <th>Rate</th>
-      <th>Movie</th>
-    </tr>
-    </thead>
-    <tbody>
-      {% for x in rates %}
-      <tr>
-        <td>{{x.rate}}/10</td>
-        <td><a href="{{url_for('movie_details', movie_id=x.movie_id)}}">{{ tittle_from_id(x.movie_id) }}</a></td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-  <h2><a href="{{ url_for('movie_post', movie_id=0 , user_id=user.id) }}">All post:</a></h2>
+
+  
+  <h2><a href="{{ url_for('movie_post', movie_id=0 , user_id=user.id) }}">All post ({{com[1]}})</a></h2>
   <table class="table">
 <tr>
+  <h2>Last post:</h2>
   <th>Post</th>
   <th>Movie</th>
   <th>Date</th>
 </tr>
-{% for com in comment %}
 <tr>
-  <td style="max-width: 60vw; overflow: hidden;"><a href="{{ url_for('post', post_id=com.id) }}">""{{com.body}}""</a></td>
-  <td><a href="{{url_for('movie_details', movie_id=com.movie_id)}}">{{ tittle_from_id(com.movie_id) }}</a></td>
-  <td>{{com.created}}</td>
+  <td style="max-width: 60vw; overflow: hidden;"><a href="{{ url_for('post', post_id=com[0].id) }}">""{{com[0].body}}""</a></td>
+  <td><a href="{{url_for('movie_details', movie_id=com[0].movie_id)}}">{{ movie_from_id(com[0].movie_id).original_title }}</a></td>
+  <td>{{com[0].created}}</td>
 </tr>
-{% endfor %}
   </table>
 {% endblock %}

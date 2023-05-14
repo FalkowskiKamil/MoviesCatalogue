@@ -22,9 +22,9 @@ def homepage():
 def utility_processor():
     def tmdb_image_url(path, size):
         return tmdb_client.get_poster_url(path, size)
-    def title_from_id(movie_id):
-        return tmdb_client.get_single_movie(movie_id)['original_title']
-    return {"tmdb_image_url": tmdb_image_url, "tittle_from_id": title_from_id}
+    def movie_from_id(movie_id):
+        return tmdb_client.get_single_movie(movie_id)
+    return {"tmdb_image_url": tmdb_image_url, "movie_from_id": movie_from_id}
 
 @app.route("/movie/<movie_id>", methods=['GET', 'POST'])
 def movie_details(movie_id):
@@ -155,10 +155,14 @@ def login():
 @app.route('/user/<username>')
 def user(username):
   user = User.query.filter_by(username=username).first_or_404()
-  comment = Post.query.filter_by(user_id=user.id).all()
-  rates = Rating.query.filter_by(user_id=user.id).all()
-  fav = Favorite.query.filter_by(user_id=user.id).all()
-  return render_template('user.html', user=user, comment=comment, rates=rates, fav=fav)
+  comment= Post.query.filter_by(user_id=user.id).order_by(Post.created.desc()).all()
+  com = [comment[0], len(comment)]
+  rating = Rating.query.filter_by(user_id=user.id).order_by(Rating.rate).all()
+  mean = [x.rate for x in rating]
+  mean = sum(mean)/len(mean)
+  rates = [rating[0], rating[-1], len(rating), mean]
+  fav = len(Favorite.query.filter_by(user_id=user.id, status=True).all())
+  return render_template('user.html', user=user, com=com, rates=rates, fav=fav)
 
 @app.route("/logout")
 @login_required
@@ -191,3 +195,13 @@ def movie_post(movie_id, user_id):
     else:
         post= Post.query.filter_by(movie_id=movie_id).all()
     return render_template("movie_post.html", post=post)
+
+@app.route('/favorite/<user_id>')
+def favorite(user_id):
+    movies = Favorite.query.filter_by(user_id=user_id, status=True).all()
+    return render_template('favorites.html', movies=movies)
+
+@app.route('/rates/<user_id>')
+def all_rates(user_id):
+    movies = Rating.query.filter_by(user_id=user_id).all()
+    return render_template('rates.html', movies=movies)

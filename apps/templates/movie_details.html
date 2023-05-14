@@ -104,7 +104,7 @@
                         <a href="{{ url_for('user', username=com.author.username) }}">autor: {{com.author.username}}</a> on {{com.created}}
                     </dt>
                 {% elif loop.index == 6 %}
-                <a href="{{ url_for('movie_post', movie_id=movie.id) }}"> and {{ (comment|length)-5 }} more..</a>
+                <a href="{{ url_for('movie_post', movie_id=movie.id, user_id=0) }}"> and {{ (comment|length)-5 }} more..</a>
                 {% endif %}
             </div>
         {% endfor %}
