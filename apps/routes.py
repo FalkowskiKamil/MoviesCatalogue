@@ -1,4 +1,4 @@
-from flask import render_template, request, flash
+from flask import render_template, request
 from apps import app, tmdb_client
 from apps.models import User, Post, Rating, PostComment, Favorite
 from apps.forms import  PostForm, RateForm, CommentForm, FavoriteForm
@@ -16,26 +16,37 @@ def homepage():
 
 @app.route("/movie/<movie_id>", methods=['GET'])
 def movie_details(movie_id):
-    details = tmdb_client.get_single_movie(movie_id)
-    cast = tmdb_client.get_single_movie_cast(movie_id)
-    postform = PostForm(csrf_enabled=False)
-    rate_form = RateForm(csrf_enabled=False)
-    favorite_form = FavoriteForm(csr_enabled=False)
-    comment = Post.query.filter_by(movie_id=movie_id).all()
-    rate = Rating.query.filter_by(movie_id=movie_id).all()
+    mean, selected_backdrop, user_rate=[],[],[]
+    forms={
+        "post_form": PostForm(csrf_enabled=False),
+        "rate_form": RateForm(csrf_enabled=False),
+        "favorite_form": FavoriteForm(csrf_enabled=False)
+    }
+    
+    tmdb={
+        'movie':tmdb_client.get_single_movie(movie_id),
+        'cast': tmdb_client.get_single_movie_cast(movie_id),
+    }
+    
+    models={
+        'post':Post.query.filter_by(movie_id=movie_id).all(),
+        'rate':Rating.query.filter_by(movie_id=movie_id).all()
+    }
+    
     if current_user.is_authenticated:
-        user_rate = Rating.query.filter_by(movie_id=movie_id, user_id = current_user.id)
-    mean,selected_backdrop=[],[]
-    if rate:
-        mean = [x.rate for x in rate]
-        mean = sum(mean)/len(mean)
-    if cast is not None and len(cast) > 9:
-        cast = cast[:10]        
-    movie_images = tmdb_client.get_movie_images(movie_id)
-    if movie_images != []:
-        selected_backdrop = random.choice(movie_images)
-        selected_backdrop=selected_backdrop['file_path']
-    return render_template("movie_details.html",mean=mean, movie=details, rate = rate, user_rate=user_rate, cast=cast, selected_backdrop=selected_backdrop, postform=postform, rate_form = rate_form,favorite_form=favorite_form, comment=comment)
+        models['user_rate'] = Rating.query.filter_by(movie_id=movie_id, user_id = current_user.id)
+    
+    if models['rate']:
+        mean = [x.rate for x in models['rate']]
+        models['mean'] = sum(mean)/len(mean)
+    
+    if tmdb['cast'] is not None and len(tmdb['cast']) > 9:
+        tmdb['cast'] = tmdb['cast'][:10]        
+    
+    if tmdb_client.get_movie_images(movie_id):
+        selected_backdrop = random.choice(tmdb_client.get_movie_images(movie_id))
+        models['selected_backdrop'] = selected_backdrop['file_path']
+    return render_template("movie_details.html", tmdb=tmdb, forms=forms, models=models)
 
 @app.route("/search")
 def search():
@@ -52,16 +63,16 @@ def live():
 @app.route('/user/<user_id>')
 def user(user_id):
   user = User.query.filter_by(id=user_id).first_or_404()
-  comment= Post.query.filter_by(user_id=user.id).order_by(Post.created.desc()).all()
-  if len(comment) > 0:
-    comment = [comment[0], len(comment)]
+  post= Post.query.filter_by(user_id=user.id).order_by(Post.created.desc()).all()
+  if len(post) > 0:
+    post = [post[0], len(post)]
   rating = Rating.query.filter_by(user_id=user.id).order_by(Rating.rate).all()
   if len(rating)>0:
     mean = [x.rate for x in rating]
     mean = sum(mean)/len(mean)
     rating = [rating[0], rating[-1], len(rating), mean]
   fav = len(Favorite.query.filter_by(user_id=user.id, status=True).all())
-  return render_template('user.html', user=user, comment=comment, rating=rating, fav=fav)
+  return render_template('user.html', user=user, post=post, rating=rating, fav=fav)
 
 @app.route('/post/<post_id>', methods=['GET'])
 def post(post_id):
@@ -69,7 +80,6 @@ def post(post_id):
     comment = PostComment.query.filter_by(post_id=post_id).all()
     form = CommentForm()
     return render_template("post.html", post=post, comment=comment, form=form)
-
 
 @app.route('/movie_post/<movie_id>/<user_id>')
 def movie_post(movie_id, user_id):

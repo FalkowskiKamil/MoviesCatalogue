@@ -1,46 +1,46 @@
 {% extends "index.html" %}
 
 {% block content %}
-
-<form action="{{ url_for('add_favorite', movie_id=movie.id) }}" method="POST">
-{{ favorite_form.hidden_tag()}}
-{{ favorite_form.favorite }}
+{% if current_user.is_authenticated %}
+<form action="{{ url_for('add_favorite', movie_id=tmdb.movie.id) }}" method="POST">
+{{ forms.favorite_form.hidden_tag()}}
+{{ forms.favorite_form.favorite }}
 </form>
-
+{% endif %}
 <div class="container">
-    {% if movie.title %}
+    {% if tmdb.movie.title %}
    <h1 class="my-4">
-       {{ movie.title }}
+       {{ tmdb.movie.title }}
       
    </h1>
     <div class="row">
         <div class="col-md-8">
-        <img class="img-fluid" src="{{tmdb_image_url(selected_backdrop, "w780" ) }}" alt="">
+        <img class="img-fluid" src="{{tmdb_image_url(models['selected_backdrop'], "w780" ) }}" alt="">
         </div>    
         <div class="col-md-4">
-            <h3>{{ movie.tagline }}</h3>
+            <h3>{{ tmdb.movie.tagline }}</h3>
             <p>
-                {{ movie.overview}}
+                {{ tmdb.movie.overview}}
             </p>
             <dl>
                 <dt>Runtime</dt>
-                    <dd>{{ movie.runtime }} min</dd>
+                    <dd>{{ tmdb.movie.runtime }} min</dd>
                 <dt>Genre</dt>
-                    <dd>{% for genre in movie.genres %}{{ genre.name }}, {% endfor %}</dd>
+                    <dd>{% for genre in tmdb.movie.genres %}{{ genre.name }}, {% endfor %}</dd>
             </dl>
                 <dt>Rating</dt>
-                <dd>{{movie.vote_average|round(2,'floor') }} / 10 ({{movie.vote_count}} vote TMDB)</dd>
-                {% if mean %}<dd>{{mean|round(2,'floor')}} / 10 ({{rate|length}} vote MC) </dd>{% endif %}
-                {% if rate_form %}
+                <dd>{{tmdb.movie.vote_average|round(2,'floor') }} / 10 ({{tmdb.movie.vote_count}} vote TMDB)</dd>
+                {% if models['mean'] %}<dd>{{models['mean']|round(2,'floor')}} / 10 ({{models['rate']|length}} vote MC) </dd>{% endif %}
+                {% if forms.rate_form %}
                 {% if current_user.is_authenticated %}
              
-                <form action="{{ url_for('add_rate', movie_id=movie.id) }}" method='post'>
+                <form action="{{ url_for('add_rate', movie_id=tmdb.movie.id) }}" method='post'>
                     <dl>
                     <div class="form-group border">
-                    {{ rate_form.hidden_tag() }}
+                    {{ forms.rate_form.hidden_tag() }}
                     <div class="form-row">
                         <div class="slider d-flex align-items-center">
-                            {{ rate_form.rate(class="range", list="tickmarks", value= user_rate.first().rate or 6 , oninput="rangeValue.innerText = this.value") }}
+                            {{ forms.rate_form.rate(class="range", list="tickmarks", value= models['user_rate'].first().rate or 6 , oninput="rangeValue.innerText = this.value") }}
                             <datalist id="tickmarks">
                                 {% for i in range(1, 11) %}
                                     <option value="{{ i }}" label="{{ i }}">{{ i }}</option>
@@ -49,10 +49,10 @@
                         </div>
                     </div>
                     <div class="form-row d-flex justify-content-center">
-                        <p value="{{user_rate.first().rate}}" id="rangeValue">{{user_rate.first().rate or 6}}</p>
+                        <p value="{{models['user_rate'].first().rate}}" id="rangeValue">{{models['user_rate'].first().rate or 6}}</p>
                     </div>
                         <div class="d-flex justify-content-end">
-                        {{rate_form.submit()}}
+                        {{forms.rate_form.submit()}}
                         </div>
                     </div>
                     </div>
@@ -73,10 +73,10 @@
 
 
 
-{% if cast %}
+{% if tmdb.cast %}
 <h3 class="my-4">Cast</h3>
 <div class="row">
-    {% for actor in cast %}
+    {% for actor in tmdb.cast %}
     <div class="col-md-3 col-sm-6 mb-4">
             <figure class="figure">
                 {% if actor.profile_path %}
@@ -91,20 +91,20 @@
 </div>
 <div class="row">
     <dl>
-        {% for com in comment %}
+        {% for post in models['post'] %}
             <div class="border">
                 {% if loop.index <= 5 %}
-                    <dd style="max-width: 60vw; overflow: hidden;"><a href="/post/{{com.id}}">{{com.body}}</a></dd>
+                    <dd style="max-width: 60vw; overflow: hidden;"><a href="/post/{{post.id}}">{{post.body}}</a></dd>
                     <dt>
-                        {% for x in com.author.rate.all() %}
-                            {% if movie.id == x.movie_id %}  
-                                {{x.rate}} / 10
+                        {% for rate in post.author.rate.all() %}
+                            {% if tmdb.movie.id == rate.movie_id %}  
+                                {{rate.rate}} / 10
                             {% endif %}
                         {% endfor %}
-                        <a href="{{ url_for('user', user_id=com.author.id) }}">autor: {{com.author.username}}</a> on {{com.created}}
+                        <a href="{{ url_for('user', user_id=post.author.id) }}">autor: {{post.author.username}}</a> on {{post.created}}
                     </dt>
                 {% elif loop.index == 6 %}
-                <a href="{{ url_for('movie_post', movie_id=movie.id, user_id=0) }}"> and {{ (comment|length)-5 }} more..</a>
+                <a href="{{ url_for('movie_post', movie_id=tmdb.movie.id, user_id=0) }}"> and {{ (models['post']|length)-5 }} more..</a>
                 {% endif %}
             </div>
         {% endfor %}
@@ -113,14 +113,14 @@
 </dl>
 </div>
     {% if current_user.is_authenticated %}
-    {% if postform %}
-    <form action="{{ url_for('add_post', movie_id=movie.id) }}" method="post">
-        {{ postform.hidden_tag() }}
+    {% if forms.post_form %}
+    <form action="{{ url_for('add_post', movie_id=tmdb.movie.id) }}" method="post">
+        {{ forms.post_form.hidden_tag() }}
         <p>
             Add post: <br>
-            {{ postform.body }}<br>
+            {{ forms.post_form.body }}<br>
         </p>
-        <p>{{ postform.submit() }}</p>
+        <p>{{ forms.post_form.submit() }}</p>
     </form>
     {% endif %}
     {% endif %}

@@ -23,8 +23,8 @@
 {% endif %}
 
 
-{% if (comment|length) >0 %}
-  <h2><a href="{{ url_for('movie_post', movie_id=0 , user_id=user.id) }}">All post ({{comment[1]}})</a></h2>
+{% if (post|length) >0 %}
+  <h2><a href="{{ url_for('movie_post', movie_id=0 , user_id=user.id) }}">All post ({{post[1]}})</a></h2>
   <table class="table">
 <tr>
   <h2>Last post:</h2>
@@ -33,9 +33,9 @@
   <th>Date</th>
 </tr>
 <tr>
-  <td style="max-width: 60vw; overflow: hidden;"><a href="{{ url_for('post', post_id=comment[0].id) }}">""{{comment[0].body}}""</a></td>
-  <td><a href="{{url_for('movie_details', movie_id=comment[0].movie_id)}}">{{ movie_from_id(comment[0].movie_id).original_title }}</a></td>
-  <td>{{comment[0].created}}</td>
+  <td style="max-width: 60vw; overflow: hidden;"><a href="{{ url_for('post', post_id=post[0].id) }}">""{{post[0].body}}""</a></td>
+  <td><a href="{{url_for('movie_details', movie_id=post[0].movie_id)}}">{{ movie_from_id(post[0].movie_id).original_title }}</a></td>
+  <td>{{post[0].created}}</td>
 </tr>
   </table>
 {% else %}

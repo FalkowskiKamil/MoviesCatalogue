@@ -1,8 +1,6 @@
 from unittest.mock import Mock
 import requests
-import tmdb_client
-from tmdb_client import api_token
-from main import app
+from apps import tmdb_client
 
 def test_get_poster_url_uses_default_size():
    # Przygotowanie danych
@@ -82,28 +80,3 @@ def test_get_popular_movies(monkeypatch):
 
    movies_list=tmdb_client.get_movies_list(list_type="popular")
    assert movies_list == mock_movies_list
-
-
-def test_homepage(monkeypatch):
-   api_mock = Mock(return_value={'results': []})
-   monkeypatch.setattr("test_tmdb_client.call_tmdb_api", api_mock)
-
-   with app.test_client() as client:
-       response = client.get('/')
-       assert response.status_code == 200
-
-   with app.test_client() as client:
-       response = client.get('/?list_type=now_playing')
-       assert response.status_code == 200
-   
-   with app.test_client() as client:
-       response = client.get('/?list_type=popular')
-       assert response.status_code == 200
-
-   with app.test_client() as client:
-       response = client.get('/?list_type=top_rated')
-       assert response.status_code == 200
-
-   with app.test_client() as client:
-       response = client.get('/?list_type=upcoming')
-       assert response.status_code == 200

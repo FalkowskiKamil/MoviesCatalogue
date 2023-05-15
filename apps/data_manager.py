@@ -51,7 +51,6 @@ def add_rate(movie_id):
                 movie_id=movie_id
             )
             db.session.add(rating)
-            
             flash(f'Successfully added rate!')
         db.session.commit()
     return redirect(url_for('movie_details', movie_id=movie_id))
@@ -68,7 +67,11 @@ def add_favorite(movie_id):
         else:
             # Toggle the existing favorite status
             favorite.status = not favorite.status
-            flash(f'Movie {favorite.status} in favorite!')
+            if favorite.status==True:
+                status = 'added to'
+            else:
+                status = 'removed from'
+            flash(f'Movie {status} favorite!')
         db.session.commit()
     referrer = request.referrer
     if referrer is None:
