@@ -1,126 +1,169 @@
 {% extends "index.html" %}
 
 {% block content %}
-{% if current_user.is_authenticated %}
-<form action="{{ url_for('add_favorite', movie_id=tmdb.movie.id) }}" method="POST">
-{{ forms.favorite_form.hidden_tag() }}
-{{ forms.favorite_form.favorite }}
-</form>
-{% endif %}
 <div class="container">
-    {% if tmdb.movie.title %}
-   <h1 class="my-4">
-       {{ tmdb.movie.title }}
-   </h1>
+    <div class="row">
+        <div class="col-md-12">
+            {% if tmdb.movie.title %}
+            <h1 class="my-4">
+                {{ tmdb.movie.title }}
+            </h1>
+        </div>
+    </div>
     <div class="row">
         <div class="col-md-8">
-        <img class="img-fluid" src="{{tmdb_image_url(models['selected_backdrop'], "w780" ) }}" alt="">
-        </div>    
+            <img class="img-fluid" src="{{ tmdb_image_url(models['selected_backdrop'], 'w780') }}" alt="">
+        </div>
         <div class="col-md-4">
             <h3>{{ tmdb.movie.tagline }}</h3>
-            <p>
-                {{ tmdb.movie.overview}}
-            </p>
+            <p>{{ tmdb.movie.overview }}</p>
             <dl>
                 <dt>Runtime</dt>
-                    <dd>{{ tmdb.movie.runtime }} min</dd>
+                <dd>{{ tmdb.movie.runtime }} min</dd>
                 <dt>Genre</dt>
-                    <dd>{% for genre in tmdb.movie.genres %}{{ genre.name }}, {% endfor %}</dd>
+                <dd>
+                    {% for genre in tmdb.movie.genres %}
+                    {{ genre.name }},{% endfor %}
+                </dd>
             </dl>
-                <dt>Rating</dt>
-                <dd>{{tmdb.movie.vote_average|round(2,'floor') }} / 10 ({{tmdb.movie.vote_count}} vote TMDB)</dd>
-                {% if models['mean'] %}<dd>{{models['mean']|round(2,'floor')}} / 10 ({{models['rate']|length}} vote MC) </dd>{% endif %}
-                {% if forms.rate_form %}
-                {% if current_user.is_authenticated %}
-             
-                <form action="{{ url_for('add_rate', movie_id=tmdb.movie.id) }}" method='post'>
-                    <dl>
-                    <div class="form-group border">
-                    {{ forms.rate_form.hidden_tag() }}
-                    <div class="form-row">
-                        <div class="slider d-flex align-items-center">
-                            {{ forms.rate_form.rate(class="range", list="tickmarks", value= models['user_rate'].first().rate or 6 , oninput="rangeValue.innerText = this.value") }}
-                            <datalist id="tickmarks">
-                                {% for i in range(1, 11) %}
-                                    <option value="{{ i }}" label="{{ i }}">{{ i }}</option>
-                                {% endfor %}
-                            </datalist>
-                        </div>
-                    </div>
-                    <div class="form-row d-flex justify-content-center">
-                        <p value="{{models['user_rate'].first().rate}}" id="rangeValue">{{models['user_rate'].first().rate or 6}}</p>
-                    </div>
-                        <div class="d-flex justify-content-end">
-                        {{forms.rate_form.submit()}}
-                        </div>
-                    </div>
-                    </div>
-                </dl>
-                </form>
+            <dt>Rating</dt>
+            <dd>{{ tmdb.movie.vote_average|round(2,'floor') }} / 10 ({{ tmdb.movie.vote_count }} vote TMDB)</dd>
+            {% if models['mean'] %}
+            <dd>{{ models['mean']|round(2,'floor') }} / 10 ({{ models['rate']|length }} vote MC)</dd>
+            {% endif %}
+            {% if forms.rate_form %}
+            {% if current_user.is_authenticated %}
+
+            <form action="{{ url_for('add_rate', movie_id=tmdb.movie.id) }}" method='post'>
                 <dl>
-                </dl>
-                {% endif %}
-                {% endif %}
-            </div>
+                <div class="form-group">
+                {{ forms.rate_form.hidden_tag() }}
+                <div class="form-row justify-content-center">
+                    <div class="slider d-flex justify-content-center">
+                        {{ forms.rate_form.rate(class="range", list="tickmarks", value= models['user_rate'].first().rate or 6 , oninput="rangeValue.innerText = this.value") }}
+                        <datalist id="tickmarks">
+                            {% for i in range(1, 11) %}
+                                <option value="{{ i }}" label="{{ i }}">{{ i }}</option>
+                            {% endfor %}
+                        </datalist>
+                    </div>
+                </div>
+                <div class="form-row d-flex justify-content-center">
+                    <p value="{{models['user_rate'].first().rate}}" id="rangeValue">actual rate: {{models['user_rate'].first().rate or 6}}</p>
+                </div>
+                <div class="form-row d-flex justify-content-center">
+                    <div class="col-auto">
+                        {{ forms.rate_form.submit(class="btn btn-primary") }}
+                    </div>
+
+                </form>
+                    <div class="col-auto">
+                        {% if current_user.is_authenticated %}
+                        <form action="{{ url_for('add_favorite', movie_id=tmdb.movie.id) }}" method="POST">
+                            {{ forms.favorite_form.hidden_tag() }}
+                            {{ forms.favorite_form.favorite(class="btn btn-primary")}}
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+                </div>
+            </dl>
+            
+            {% endif %}
+            {% endif %}
+        </div>
     </div>
     {% else %}
     <div class="col-lg-12 text-center">
         <h1 class="mt-5">Sorry, there is no detailed information about this movie in our database</h1>
-      </div>
+    </div>
     {% endif %}
 </div>
 
 
+
 {% if tmdb.cast %}
-<h3 class="my-4">Cast</h3>
-<div class="row">
-    {% for actor in tmdb.cast %}
-    <div class="col-md-3 col-sm-6 mb-4">
-            <figure class="figure">
-                {% if actor.profile_path %}
-                    <img src="{{ tmdb_image_url(actor.profile_path, "w185") }}" class="figure-img img-fluid rounded" alt="{{ actor.name }}">
-                {% else %}
-                    <img src="https://placehold.it/185x278?text={{ actor.name }}" class="figure-img img-fluid rounded" alt="{{ actor.name }}">
-                {% endif %}
-                <figcaption class="figure-caption">{{ actor.name }} as {{ actor.character }}</figcaption>
-            </figure>
-    </div>
-    {% endfor %}
-</div>
-<div class="row">
-    <dl>
-        {% for post in models['post'] %}
-            <div class="border">
-                {% if loop.index <= 5 %}
-                    <dd style="max-width: 60vw; overflow: hidden;"><a href="/post/{{post.id}}">{{post.body}}</a></dd>
-                    <dt>
-                        {% for rate in post.author.rate.all() %}
-                            {% if tmdb.movie.id == rate.movie_id %}  
-                                {{rate.rate}} / 10
-                            {% endif %}
-                        {% endfor %}
-                        <a href="{{ url_for('user', user_id=post.author.id) }}">autor: {{post.author.username}}</a> on {{post.created}}
-                    </dt>
-                {% elif loop.index == 6 %}
-                <a href="{{ url_for('movie_post', movie_id=tmdb.movie.id, user_id=0) }}"> and {{ (models['post']|length)-5 }} more..</a>
-                {% endif %}
+<div class="container">
+    <h3 class="my-4">Cast</h3>
+    <div class="row">
+        {% for actor in tmdb.cast %}
+            <div class="col-md-3 col-sm-6 mb-4">
+                <div class="card">
+                    {% if actor.profile_path %}
+                        <img src="{{ tmdb_image_url(actor.profile_path, 'w185') }}" class="card-img-top" alt="{{ actor.name }}">
+                    {% else %}
+                        <img src="https://placehold.it/185x278?text={{ actor.name }}" class="card-img-top" alt="{{ actor.name }}">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ actor.name }}</h5>
+                        <p class="card-text">{{ actor.character }}</p>
+                    </div>
+                </div>
             </div>
         {% endfor %}
-</dl>
+    </div>
 </div>
-{% if current_user.is_authenticated %}
-{% if forms.post_form %}
-<form action="{{ url_for('add_post', movie_id=tmdb.movie.id) }}" method="post">
-    {{ forms.post_form.hidden_tag() }}
-    <p>
-        Add post: <br>
-        {{ forms.post_form.body }}<br>
-    </p>
-    <p>{{ forms.post_form.submit() }}</p>
-</form>
-{% endif %}
-{% endif %}
-</div>
+
+<div class="container border border-muted bg-light">
+    <div class="row">
+      <div class="col">
+        <h3 class="my-4">Reviews</h3>
+        <div class=" p-3">
+          {% for post in models['post'] %}
+            {% if loop.index <= 5 %}
+              <div class="card mb-3">
+                <div class="card-body">
+                  <h5 class="card-title border-bottom pb-2">
+                    <a href="{{ url_for('user', user_id=post.author.id) }}">
+                      author: {{ post.author.username }}
+                    </a> - {{ post.created }}
+                  </h5>
+                  {% for rate in post.author.rate.all() %}
+                    {% if tmdb.movie.id == rate.movie_id %}  
+                      <p class="card-text">
+                        <small class="text-muted">Rating: {{ rate.rate }}/10</small>
+                      </p>
+                    {% endif %}
+                  {% endfor %}
+                  <p class="card-text">
+                    {{ post.body }}
+                  </p>
+                  <p class="card-text">
+                    <a href="/post/{{ post.id }}">
+                      Comment: {{ post.comment.all()|length }}
+                    </a>
+                  </p>
+                </div>
+              </div>
+            {% elif loop.index == 6 %}
+              <div class="card mb-3">
+                <div class="card-body">
+                  <a href="{{ url_for('movie_post', movie_id=tmdb.movie.id, user_id=0) }}" class="btn btn-primary">See more reviews...</a>
+                </div>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    {% if current_user.is_authenticated %}
+      {% if forms.post_form %}
+        <div class="row">
+          <div class="col">
+            <h3 class="my-4">Write a Review</h3>
+            <form action="{{ url_for('add_post', movie_id=tmdb.movie.id) }}" method="post">
+              {{ forms.post_form.hidden_tag() }}
+              <div class="form-group">
+                {{ forms.post_form.body(class="form-control", placeholder="Write your review here...") }}
+              </div>
+              {{ forms.post_form.submit(class="btn btn-primary") }}
+            </form>
+          </div>
+        </div>
+      {% endif %}
+    {% endif %}
+  
+  
 {% endif %}
 
 {% endblock %}

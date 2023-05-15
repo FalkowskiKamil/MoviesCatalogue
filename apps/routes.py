@@ -104,12 +104,12 @@ def post(post_id):
 def movie_post(movie_id, user_id):
     # If the movie_id is '0', retrieve all posts by the user
     if movie_id == '0':
-        post = Post.query.filter_by(user_id=user_id).all()
+        posts = Post.query.filter_by(user_id=user_id).all()
     # Otherwise, retrieve all posts for the specified movie
     else:
-        post = Post.query.filter_by(movie_id=movie_id).all()
+        posts = Post.query.filter_by(movie_id=movie_id).all()
     # Render the "movie_post.html" template with the posts
-    return render_template("movie_post.html", post=post)
+    return render_template("movie_post.html", posts=posts)
 
 @app.route('/favorite/<user_id>')
 def favorite(user_id):
@@ -120,7 +120,7 @@ def favorite(user_id):
 @app.route('/rates/<user_id>')
 def all_rates(user_id):
     # Retrieve all ratings for the specified user_id
-    movies = Rating.query.filter_by(user_id=user_id).all()
+    movies = Rating.query.filter_by(user_id=user_id).order_by(Rating.rate.desc()).all()
     return render_template('rates.html', movies=movies)
 
 @app.context_processor

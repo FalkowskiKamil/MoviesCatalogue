@@ -1,14 +1,24 @@
 {% extends "index.html" %}
 
 {% block content %}
-{% for posts in post %}
-<div class="container border">
-    <!-- Display post information -->
-    <a href="{{url_for('post', post_id=posts.id)}}">{{posts.body}}</a>
-    by <a href="{{url_for('user', user_id = posts.author.id)}}">{{posts.author.username}}</a>
-    on {{posts.created}}<br>
-    <!-- Display comment count for the post -->
-    Comment: {{posts.comment.all()|length }}
+<div class="container mt-2">
+    {% for post in posts %}
+    <div class="card border mb-4">
+        <div class="card-body">
+            <h5 class="card-title">
+                <a href="{{ url_for('post', post_id=post.id) }}" class="text-decoration-none">{{ post.body }}</a>
+            </h5>
+            <p class="card-text">
+                by <a href="{{ url_for('user', user_id=post.author.id) }}" class="text-decoration-none">{{ post.author.username }}</a>
+                on {{ post.created }}
+            </p>
+        </div>
+        <div class="card-footer">
+            <p class="card-text">
+                Comment: {{ post.comment.all()|length }}
+            </p>
+        </div>
+    </div>
+    {% endfor %}
 </div>
-{% endfor %}
 {% endblock %}

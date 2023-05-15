@@ -1,32 +1,32 @@
 {% extends "index.html" %}
 
 {% block content %}
-
-<div class="row">
-   <div class="col-lg-12 text-center">
-       <h1 class="mt-5">Favorite movie of user: {% for name in movies %}{% if loop.index == 1 %}
-        <a href="{{url_for('user', user_id=name.fan.id)}}">{{name.fan.username}}</a>
-    {% endif %}{% endfor %}:</h1>
-   </div>
-   {% for movie in movies %}
-   <div class="col-lg-3 col-md-6 mb-4">
-       <div class="card h-100">
-        <!-- Link to the movie details page -->
-        <a class="card h-100" href="{{ url_for('movie_details', movie_id=movie.movie_id) }}">
-            <!-- Display the movie poster image -->
-            <img src="{{ tmdb_image_url(movie_from_id(movie_id=movie.movie_id).poster_path, "w780") }}">
-        </a>
-           <div class="card-body">
-               <!-- Display the original title of the movie -->
-               <h4 class="card-title">{{ movie_from_id(movie_id=movie.movie_id).original_title }}</h4>
-           </div>
-           <div class="card-footer text-center">
-            <!-- Link to show more details about the movie -->
-            <a href="{{ url_for('movie_details', movie_id=movie.id) }}">Show more</a>
-            </div>
+<div class="container">
+   <div class="row">
+       <div class="col-lg-12 text-center">
+           <h1 class="mt-5">Favorite movie of user: {% for name in movies %}{% if loop.index == 1 %}
+            <a href="{{url_for('user', user_id=name.fan.id)}}" class="text-decoration-none">{{name.fan.username}}</a>
+        {% endif %}{% endfor %}:</h1>
        </div>
+       {% for movie in movies %}
+       <div class="col-lg-3 col-md-6 mb-4">
+           <div class="card h-100">
+            <!-- Link to the movie details page -->
+            <a class="card-link h-100" href="{{ url_for('movie_details', movie_id=movie.movie_id) }}">
+                <!-- Display the movie poster image -->
+                <img src="{{ tmdb_image_url(movie_from_id(movie_id=movie.movie_id).poster_path, "w780") }}" class="card-img-top" alt="{{ movie_from_id(movie_id=movie.movie_id).original_title }}">
+            </a>
+               <div class="card-body">
+                   <!-- Display the original title of the movie -->
+                   <h4 class="card-title">{{ movie_from_id(movie_id=movie.movie_id).original_title }}</h4>
+               </div>
+               <div class="card-footer text-center">
+                <!-- Link to show more details about the movie -->
+                <a href="{{ url_for('movie_details', movie_id=movie.id) }}" class="btn btn-primary">Show more</a>
+                </div>
+           </div>
+       </div>
+       {% endfor %}
    </div>
-   {% endfor %}
 </div>
-
 {% endblock %}

@@ -1,44 +1,64 @@
 {% extends "index.html" %}
 
 {% block content %}
-<h1>Profile: {{ user.username }}!</h1> <!-- Displays the username in the heading -->
-<h2>Created on {{user.joined_at}} </h2> <!-- Displays the user's join date -->
+<div class="container">
+    <h1 class="text-center">Profile: {{ user.username|capitalize }}</h1>
+    <p>Created on {{ user.joined_at }}</p>
+    <div class="mt-4 card">
+      <div class="card-body">
+          <h2 class="card-title">Favorites:</h2>
+          {% if fav %}
+          <h1><a href="{{ url_for('favorite', user_id=user.id) }}">List of favorite movies ({{ fav }} movies)</a></h1>
+          {% else %}
+          <h1>User has not added any movies to the favorite list</h1>
+          {% endif %}
+      </div>
+  </div>
 
-{% if fav %}
-<h1><a href="{{ url_for('favorite', user_id = user.id) }}">List of favorites movies ({{fav}} movies)</a></h1> <!-- Provides a link to the user's favorite movies page and displays the count of favorite movies -->
-{% else %}
-<h1>User not added any movie to favorite list</h1> <!-- Message displayed when the user has not added any movies to their favorite list -->
-{% endif%}
-{% if (rating|length) >0 %}
-<h2>Rates:</h2>
-  <h2><a href="{{url_for('all_rates', user_id=user.id)}}">All rated movie({{rating[2]}})</a></h2> <!-- Provides a link to the page displaying all rated movies by the user and displays the count of rated movies -->
-  <h2>Mean rate: </h2>
-{{rating[3]}} <!-- Displays the mean rate -->
-  <h2>Highest rated movie:</h2>
-  <a href="{{url_for('movie_details', movie_id=rating[1].movie_id) }}">{{ movie_from_id(movie_id=rating[1].movie_id).original_title }}</a> ({{rating[1].rate}}/10) <!-- Displays the highest rated movie by the user and its rating -->
-  <h2>Lowest rated movie </h2>
-  <a href="{{url_for('movie_details', movie_id=rating[0].movie_id) }}">{{ movie_from_id(movie_id=rating[0].movie_id).original_title }}</a> ({{rating[0].rate}}/10) <!-- Displays the lowest rated movie by the user and its rating -->
-{% else %}
-<h2>User not added any rating</h2> <!-- Message displayed when the user has not added any ratings -->
-{% endif %}
+  <div class="mt-4 card">
+      <div class="card-body">
+          {% if rating|length > 0 %}
+          <h2 class="text-center">Mean rate: {{ rating[3] }}</h2>
+          <h2 class="card-title">Rates: <a href="{{ url_for('all_rates', user_id=user.id) }}">All rated movies ({{ rating[2] }})</a></h2>
+          <h2></h2>
+          <h2>Highest rated movie:</h2>
+          <p><a href="{{ url_for('movie_details', movie_id=rating[1].movie_id) }}">{{ movie_from_id(movie_id=rating[1].movie_id).original_title }}</a> ({{ rating[1].rate }}/10)</p>
+          <h2>Lowest rated movie:</h2>
+          <p><a href="{{ url_for('movie_details', movie_id=rating[0].movie_id) }}">{{ movie_from_id(movie_id=rating[0].movie_id).original_title }}</a> ({{ rating[0].rate }}/10)</p>
+          {% else %}
+          <h2 class="card-title">User has not added any ratings</h2>
+          {% endif %}
+      </div>
+  </div>
 
+  <div class="mt-4 card">
+    <div class="card-body">
+        {% if post|length > 0 %}
+        <h2 class="card-title">Posts: <a href="{{ url_for('movie_post', movie_id=0, user_id=user.id) }}">All posts ({{ post[1] }})</a></h2>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Post</th>
+                        <th>Movie</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="max-width: 60vw; overflow: hidden;"><a href="{{ url_for('post', post_id=post[0].id) }}">"{{ post[0].body }}"</a></td>
+                        <td><a href="{{ url_for('movie_details', movie_id=post[0].movie_id) }}">{{ movie_from_id(post[0].movie_id).original_title }}</a></td>
+                        <td>{{ post[0].created }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p class="text-muted">* This table represents the last created post.</p>
+        </div>
+        {% else %}
+        <h2 class="card-title">User has not added any posts</h2>
+        {% endif %}
+    </div>
+</div>
 
-{% if (post|length) >0 %}
-  <h2><a href="{{ url_for('movie_post', movie_id=0 , user_id=user.id) }}">All post ({{post[1]}})</a></h2> <!-- Provides a link to the page displaying all posts by the user and displays the count of posts -->
-  <table class="table">
-<tr>
-  <h2>Last post:</h2>
-  <th>Post</th>
-  <th>Movie</th>
-  <th>Date</th>
-</tr>
-<tr>
-  <td style="max-width: 60vw; overflow: hidden;"><a href="{{ url_for('post', post_id=post[0].id) }}">""{{post[0].body}}""</a></td> <!-- Displays the content of the last post with a link to the post's page -->
-  <td><a href="{{url_for('movie_details', movie_id=post[0].movie_id)}}">{{ movie_from_id(post[0].movie_id).original_title }}</a></td> <!-- Displays the movie title associated with the last post -->
-  <td>{{post[0].created}}</td> <!-- Displays the date of the last post -->
-</tr>
-  </table>
-{% else %}
-<h2>User not added any post</h2> <!-- Message displayed when the user has not added any posts -->
-{% endif %}
+</div>
 {% endblock %}
