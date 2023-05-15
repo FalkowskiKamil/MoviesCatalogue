@@ -19,9 +19,11 @@ class User(UserMixin, db.Model):
        return f"<User {self.username}>"
   
   def set_password(self, password):
+    # Set the password for the user
     self.password_hash = generate_password_hash(password)
 
   def check_password(self, password):
+    # Check if the provided password matches the user's password
     return check_password_hash(self.password_hash, password)
 
 class Post(db.Model):
@@ -40,6 +42,7 @@ class Rating(db.Model):
   rate = db.Column(db.Integer, index = True)
   user_id = db.Column(db.Integer, db.ForeignKey('user.id'), index=True)
   movie_id = db.Column(db.Integer, index=True)
+  # Define a unique constraint on user_id and movie_id to ensure each user can rate a movie only once
   __table_args__ = (UniqueConstraint('user_id', 'movie_id', name='unique_user_movie'),)
   
   def __str__(self):
@@ -60,4 +63,5 @@ class Favorite(db.Model):
   user_id = db.Column(db.Integer, db.ForeignKey('user.id'), index= True)
   movie_id = db.Column(db.Integer, index= True)
   status = db.Column(db.Boolean)
+  # Define a unique constraint on user_id and movie_id to ensure each user can have a favorite entry for a movie only once
   __table_args__ = (UniqueConstraint('user_id', 'movie_id', name='unique_user_movie_fav'),)

@@ -8,6 +8,7 @@
        <p class="lead">You find here only the best titles!</p>
    </div>
     <div class="col-lg-12 mb-4">
+        <!-- Buttons to filter the movie list -->
         <a href="{{ url_for('homepage', list_type="popular") }}" class="btn btn-outline-info {% if current_list == "popular" %} active {% endif %}">Popular</a>
         <a href="{{ url_for('homepage', list_type="now_playing") }}"  class="btn btn-outline-info {% if current_list== "now_playing" %} active {% endif %}">Now Playing</a>
         <a href="{{ url_for('homepage', list_type="top_rated") }}"  class="btn btn-outline-info {% if current_list == "top_rated" %} active {% endif %}">Top Rated</a>
@@ -16,16 +17,22 @@
 {% for movie in movies %}
         <div class="col-lg-3 col-md-6 mb-4">
             <div class="card h-100">
-                <a class ="card h-100" href="{{ url_for('movie_details', movie_id=movie.id) }}"><img src="{{ tmdb_image_url(movie.poster_path, "w780") }}"></a>
+                <!-- Link to the movie details page -->
+                <a class="card h-100" href="{{ url_for('movie_details', movie_id=movie.id) }}">
+                    <!-- Display the movie poster image -->
+                    <img src="{{ tmdb_image_url(movie.poster_path, "w780") }}">
+                </a>
                 <div class="card-body">
-                    <h4 class="card-title"> {{ movie.title }} </h4>
+                    <!-- Display the movie title -->
+                    <h4 class="card-title">{{ movie.title }}</h4>
                 </div>
-                <div class="card-footer text-center ">
+                <div class="card-footer text-center">
+                    <!-- Link to show more details about the movie -->
                     <a href="{{ url_for('movie_details', movie_id=movie.id) }}">Show more</a>
                     </div>
             </div>
         </div>
-        {% endfor %}
+{% endfor %}
 </div>
 
 {% endblock %}

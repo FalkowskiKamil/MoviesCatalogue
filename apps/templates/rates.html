@@ -5,21 +5,20 @@
 <div class="row">
    <div class="col-lg-12 text-center">
        <h1 class="mt-5">Movie rates by {% for name in movies %}{% if loop.index == 1 %}
-        <a href="{{url_for('user', user_id=name.reviewer.id)}}">{{name.reviewer.username}}</a>
+        <a href="{{url_for('user', user_id=name.reviewer.id)}}">{{name.reviewer.username}}</a> <!-- Displays the username of the first movie reviewer in the 'movies' collection -->
     {% endif %}{% endfor %}:</h1>
    </div>
 
    {% for movie in movies %}
    <div class="col-lg-3 col-md-6 mb-4">
        <div class="card h-30">
-        <a class ="card h-30" href="{{ url_for('movie_details', movie_id=movie.movie_id) }}"><img src="{{ tmdb_image_url(movie_from_id(movie_id=movie.movie_id).poster_path, "w780") }}"></a>
+        <a class ="card h-30" href="{{ url_for('movie_details', movie_id=movie.movie_id) }}"><img src="{{ tmdb_image_url(movie_from_id(movie_id=movie.movie_id).poster_path, "w780") }}"></a> <!-- Displays the movie poster image with a link to the movie details page -->
            <div class="card-body">
-               <h4 class="card-title"> {{movie_from_id(movie_id=movie.movie_id).original_title}} </h4>
+               <h4 class="card-title"> {{movie_from_id(movie_id=movie.movie_id).original_title}} </h4> <!-- Displays the original title of the movie -->
            </div>
            <div class="card-footer text-center ">
-            <a href="{{ url_for('movie_details', movie_id=movie.id) }}">{{movie.rate}}/10 Show more</a>
-
-            </div>
+            <a href="{{ url_for('movie_details', movie_id=movie.id) }}">{{movie.rate}}/10 Show more</a> <!-- Displays the movie's rate and provides a link to the movie details page -->
+           </div>
        </div>
    </div>
    {% endfor %}

@@ -1,28 +1,32 @@
 {% extends "index.html" %}
-{% block content %}
-<h1>Post by <a href="{{url_for('user', user_id=post.author.id)}}">{{post.author.username}}</a> </h1>
-<div class="container border">
-<p class="border">{{post.body}}</p>
-<h2>About movie: <a href="{{ url_for('movie_details', movie_id=post.movie_id)}}">{{movie_from_id(post.movie_id).original_title}}</a>, created on {{post.created}}</h2>
-</div>
 
-<div class="container border">
-{% for com in comment %}
-<p>{{com.body}}</p>
-<p>author: <a href="{{url_for('user', user_id=com.commentator.id)}}">{{com.commentator.username}}</a></p>
-{% endfor %}
-</div>
-{% if current_user.is_authenticated %}
-<form action="{{ url_for('add_comment', post_id=post.id) }}" method="post">
-    {{ form.csrf_token }}
-    <p>
-        Add comment: <br>
-        {{ form.body(cols=50, rows=4) }}<br>
-        {% for error in form.body.errors %}
-            <span style="color: red;">[{{ error }}]</span>
+{% block content %}
+    <h1>Post by <a href="{{url_for('user', user_id=post.author.id)}}">{{post.author.username}}</a> </h1>
+    <div class="container border">
+        <p class="border">{{post.body}}</p> <!-- Displays the content of the post -->
+        <h2>About movie: <a href="{{ url_for('movie_details', movie_id=post.movie_id)}}">{{movie_from_id(post.movie_id).original_title}}</a>, created on {{post.created}}</h2> <!-- Displays information about the movie associated with the post -->
+    </div>
+
+    <div class="container border">
+        {% for com in comment %}
+            <p>{{com.body}}</p> <!-- Displays the content of each comment -->
+            <p>author: <a href="{{url_for('user', user_id=com.commentator.id)}}">{{com.commentator.username}}</a></p> <!-- Displays the username of the commentator and provides a link to their user profile -->
         {% endfor %}
-    </p>
-    <p>{{ form.submit() }}</p>
-</form>
-{% endif %}
+    </div>
+
+    {% if current_user.is_authenticated %}
+        <form action="{{ url_for('add_comment', post_id=post.id) }}" method="post">
+            {{ form.csrf_token }}
+            <p>
+                Add comment: <br>
+                {{ form.body(cols=50, rows=4) }}<br> <!-- Renders a text area for the user to enter their comment -->
+                {% for error in form.body.errors %}
+                    <span style="color: red;">[{{ error }}]</span> <!-- Displays any validation errors for the comment input -->
+                {% endfor %}
+            </p>
+            <p>{{ form.submit() }}</p> <!-- Renders a submit button for adding the comment -->
+        </form>
+    {% else %}
+        <p>Please <a href="{{url_for('login')}}">log in</a> to add a comment.</p> <!-- Displays a message to prompt the user to log in if they want to add a comment -->
+    {% endif %}
 {% endblock %}

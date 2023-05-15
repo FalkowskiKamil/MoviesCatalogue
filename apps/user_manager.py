@@ -8,33 +8,35 @@ from apps.models import User
 def register():
   form = RegistrationForm()
   if form.validate_on_submit():
-    # define user with data from form here:
+    # Create a new user object with data from the form
     user = User(username=form.username.data, email=form.email.data)
-    # set user's password here:
+    # Set the user's password
     user.set_password(form.password.data)
+    # Add the user to the database
     db.session.add(user)
     db.session.commit()
-    flash(f'You`re succesfuly registered!')
+    flash(f'You`re succesfully registered!')
+    # Log in the newly registered user
     login_user(user=user)
     return redirect(url_for('homepage'))
   return render_template('register.html', form=form)
 
-
 @login_manager.user_loader
 def load_user(id):
+    # Load the user from the database based on the given id
     return User.query.get(int(id))
 
 @app.route('/login', methods=['GET','POST'])
 def login():
   form = LoginForm()
   if form.validate_on_submit():
-    # query User here:
+    # Query the database for the user with the entered username
     user = User.query.filter_by(username=form.username.data).first()
-    # check if a user was found and the form password matches here:
+    # Check if a user was found and if the entered password matches
     if user and user.check_password(form.password.data):
-      # login user here:
+      # Log in the user
       login_user(user, remember=form.remember.data)
-      flash(f'Login Succesfuly!')
+      flash(f'Login Successfully!')
       return redirect(url_for('homepage'))
     else:
       flash('Something went wrong!')
@@ -44,6 +46,7 @@ def login():
 @app.route("/logout")
 @login_required
 def logout():
+    # Log out the current user
     logout_user()
-    flash(f'You are succesfuly logout!')
+    flash(f'You are successfully logged out!')
     return redirect(url_for('homepage'))
