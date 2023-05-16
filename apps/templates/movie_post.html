@@ -9,7 +9,7 @@
                 <a href="{{ url_for('post', post_id=post.id) }}" class="text-decoration-none">{{ post.body }}</a>
             </h5>
             <p class="card-text">
-                by <a href="{{ url_for('user', user_id=post.author.id) }}" class="text-decoration-none">{{ post.author.username }}</a>
+                by <a href="{{ url_for('user', user_id=post.author.id) }}" class="text-decoration-none">{{ post.author.username|capitalize }}</a>
                 on {{ post.created }}
             </p>
         </div>

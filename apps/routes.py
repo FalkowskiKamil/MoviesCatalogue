@@ -1,4 +1,4 @@
-from flask import render_template, request
+from flask import render_template, request, flash
 from apps import app, tmdb_client
 from apps.models import User, Post, Rating, PostComment, Favorite
 from apps.forms import  PostForm, RateForm, CommentForm, FavoriteForm
@@ -19,9 +19,9 @@ def homepage():
 def movie_details(movie_id):
     # Creates instances of different forms
     forms={
-        "post_form": PostForm(csrf_enabled=False),
-        "rate_form": RateForm(csrf_enabled=False),
-        "favorite_form": FavoriteForm(csrf_enabled=False)
+        "post_form": PostForm(),
+        "rate_form": RateForm(),
+        "favorite_form": FavoriteForm()
     }
     # Retrieves movie information and cast details using the tmdb_client
     tmdb={

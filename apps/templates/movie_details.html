@@ -33,42 +33,38 @@
             {% endif %}
             {% if forms.rate_form %}
             {% if current_user.is_authenticated %}
-
-            <form action="{{ url_for('add_rate', movie_id=tmdb.movie.id) }}" method='post'>
-                <dl>
-                <div class="form-group">
+            <div class="form-group mt-4">
+                    
+                <form action="{{ url_for('add_rate', movie_id=tmdb.movie.id) }}" method='post'>
                 {{ forms.rate_form.hidden_tag() }}
-                <div class="form-row justify-content-center">
-                    <div class="slider d-flex justify-content-center">
-                        {{ forms.rate_form.rate(class="range", list="tickmarks", value= models['user_rate'].first().rate or 6 , oninput="rangeValue.innerText = this.value") }}
-                        <datalist id="tickmarks">
-                            {% for i in range(1, 11) %}
-                                <option value="{{ i }}" label="{{ i }}">{{ i }}</option>
-                            {% endfor %}
-                        </datalist>
+                    <div class="form-row justify-content-center">
+                        <div class="slider d-flex justify-content-center">
+                            {{ forms.rate_form.rate(class="range", list="tickmarks", value= models['user_rate'].first().rate or 6 , oninput="rangeValue.innerText = this.value") }}
+                            <datalist id="tickmarks">
+                                {% for i in range(1, 11) %}
+                                    <option value="{{ i }}" label="{{ i }}">{{ i }}</option>
+                                {% endfor %}
+                            </datalist>
+                        </div>
                     </div>
-                </div>
-                <div class="form-row d-flex justify-content-center">
-                    <p value="{{models['user_rate'].first().rate}}" id="rangeValue">actual rate: {{models['user_rate'].first().rate or 6}}</p>
-                </div>
-                <div class="form-row d-flex justify-content-center">
-                    <div class="col-auto">
-                        {{ forms.rate_form.submit(class="btn btn-primary") }}
+                    <div class="form-row d-flex justify-content-center">
+                        <p value="{{models['user_rate'].first().rate}}" id="rangeValue">actual rate: {{models['user_rate'].first().rate or 6}}</p>
                     </div>
-
+                    <div class="form-row d-flex justify-content-center">
+                        <div class="col-auto">
+                            {{ forms.rate_form.submit(class="btn btn-primary") }}
+                        </div>
                 </form>
-                    <div class="col-auto">
-                        {% if current_user.is_authenticated %}
-                        <form action="{{ url_for('add_favorite', movie_id=tmdb.movie.id) }}" method="POST">
-                            {{ forms.favorite_form.hidden_tag() }}
-                            {{ forms.favorite_form.favorite(class="btn btn-primary")}}
-                        </form>
-                        {% endif %}
+                        <div class="col-auto">
+                            {% if current_user.is_authenticated %}
+                            <form action="{{ url_for('add_favorite', movie_id=tmdb.movie.id) }}" method="POST">
+                                {{ forms.favorite_form.hidden_tag() }}
+                                {{ forms.favorite_form.favorite(class="btn btn-primary")}}
+                            </form>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
-                </div>
-            </dl>
-            
             {% endif %}
             {% endif %}
         </div>
@@ -115,7 +111,7 @@
                 <div class="card-body">
                   <h5 class="card-title border-bottom pb-2">
                     <a href="{{ url_for('user', user_id=post.author.id) }}">
-                      author: {{ post.author.username }}
+                      author: {{ post.author.username|capitalize }}
                     </a> - {{ post.created }}
                   </h5>
                   {% for rate in post.author.rate.all() %}
