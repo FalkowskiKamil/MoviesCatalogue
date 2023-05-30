@@ -40,7 +40,7 @@ def get_single_movie_cast(movie_id):
         "Authorization": f"Bearer {api_token}"
     }
     response = requests.get(endpoint, headers=headers)
-    if 'cast' in response.json():
+    if "cast" in response.json():
         return response.json()["cast"]
     else:
         return None
@@ -52,8 +52,8 @@ def get_movie_images(movie_id):
         "Authorization": f"Bearer {api_token}"
     }
     response = requests.get(endpoint, headers=headers)
-    if 'backdrops' in response.json():
-        return response.json()['backdrops']
+    if "backdrops" in response.json():
+        return response.json()["backdrops"]
     else:
         return []
 
@@ -76,5 +76,5 @@ def live():
     response = requests.get(endpoint, headers=headers)
     response.raise_for_status()
     response=response.json()
-    return response['results']
+    return response["results"]
 

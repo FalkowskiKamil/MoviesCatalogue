@@ -27,9 +27,9 @@
                 </dd>
             </dl>
             <dt>Rating</dt>
-            <dd>{{ tmdb.movie.vote_average|round(2,'floor') }} / 10 ({{ tmdb.movie.vote_count }} vote TMDB)</dd>
-            {% if models['mean'] %}
-            <dd>{{ models['mean']|round(2,'floor') }} / 10 ({{ models['rate']|length }} vote MC)</dd>
+            <dd>{{ tmdb.movie.vote_average|round(2,"floor") }} / 10 ({{ tmdb.movie.vote_count }} vote TMDB)</dd>
+            {% if models["mean"] %}
+            <dd>{{ models["mean"]|round(2,"floor") }} / 10 ({{ models["rate"]|length }} vote MC)</dd>
             {% endif %}
             {% if forms.rate_form %}
             {% if current_user.is_authenticated %}
@@ -105,7 +105,7 @@
       <div class="col">
         <h3 class="my-4">Reviews</h3>
         <div class=" p-3">
-          {% for post in models['post'] %}
+          {% for post in models["post"] %}
             {% if loop.index <= 5 %}
               <div class="card mb-3">
                 <div class="card-body">
