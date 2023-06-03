@@ -1,4 +1,4 @@
-from flask import render_template, request, flash
+from flask import render_template, request
 from apps import app, tmdb_client
 from apps.models import User, Post, Rating, PostComment, Favorite
 from apps.forms import PostForm, RateForm, CommentForm, FavoriteForm
