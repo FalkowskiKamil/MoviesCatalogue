@@ -18,7 +18,7 @@ RUN pip install -r requirements.txt
 COPY . .
 
 # Expose the port that your Flask app will listen on
-EXPOSE 8000
+EXPOSE 5000
 
 # Specify the command to run when the container starts
 CMD ["flask", "run"]
