@@ -1,0 +1,6 @@
+Include/
+.git/
+.pytest_cache/
+instance/
+migrations/
+myenv/
