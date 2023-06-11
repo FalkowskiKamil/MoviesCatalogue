@@ -20,6 +20,7 @@ class User(UserMixin, db.Model):
         ratings (List[Rating]): The list of ratings given by the user.
         favorites (List[Favorite]): The list of movies marked as favorites by the user.
     """
+
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
@@ -56,6 +57,7 @@ class Post(db.Model):
         movie_id (int): The ID of the movie associated with the post.
         comments (List[PostComment]): The list of comments on the post.
     """
+
     id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.Text)
     created = db.Column(db.DateTime, index=True, default=datetime.utcnow)
@@ -66,10 +68,12 @@ class Post(db.Model):
     def __str__(self):
         return f"<Post {self.id} {self.body[:50]} ...>"
 
+
 class Rating(db.Model):
     """
     Model representing a rating given by a user to a movie.
     """
+
     id = db.Column(db.Integer, primary_key=True)
     rate = db.Column(db.Integer, index=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), index=True)
@@ -93,6 +97,7 @@ class PostComment(db.Model):
     """
     Model representing a comment on a post.
     """
+
     id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.Text)
     created = db.Column(db.DateTime, index=True, default=datetime.utcnow)
@@ -113,6 +118,7 @@ class Favorite(db.Model):
     """
     Model representing a favorite movie entry for a user.
     """
+
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), index=True)
     movie_id = db.Column(db.Integer, index=True)

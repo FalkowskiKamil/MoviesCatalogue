@@ -78,7 +78,10 @@ def search():
     """
     search_query = request.args.get("query", "")
     movies = tmdb_client.search_movies(search_query)
-    return render_template("search_results.html", movies=movies, search_query=search_query)
+    return render_template(
+        "search_results.html", movies=movies, search_query=search_query
+    )
+
 
 @app.route("/live")
 def live():
@@ -201,6 +204,7 @@ def utility_processor():
     Returns:
         A dictionary containing the utility functions and variables accessible in templates.
     """
+
     def tmdb_image_url(path, size):
         """
         Generates the URL for a TMDB poster image using the provided path and size.

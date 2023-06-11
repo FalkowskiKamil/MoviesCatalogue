@@ -22,5 +22,5 @@ from . import (
     test_tmdb_client,
 )
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run()
