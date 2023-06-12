@@ -78,9 +78,7 @@ def search():
     """
     search_query = request.args.get("q", "")
     movies = tmdb_client.search_movie(search_query=search_query)["results"]
-    return render_template(
-        "search.html", movies=movies, search_query=search_query
-    )
+    return render_template("search.html", movies=movies, search_query=search_query)
 
 
 @app.route("/live")

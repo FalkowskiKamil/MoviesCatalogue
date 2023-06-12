@@ -9,7 +9,7 @@ from wtforms import (
     TextAreaField,
 )
 from apps import tmdb_client, db, app
-from werkzeug.security import  check_password_hash
+from werkzeug.security import check_password_hash
 from .models import *
 from .forms import *
 from .routes import *
@@ -104,22 +104,23 @@ class Tmbdb_ClientTestCase(unittest.TestCase):
         )
         self.assertEqual(result, ["show1", "show2"])
 
+
 class ModelTestCase(unittest.TestCase):
     def setUp(self):
         # Set up any necessary test data
-        self.user = User(username='testuser', email='test@example.com')
-        self.user.set_password('testpassword')
+        self.user = User(username="testuser", email="test@example.com")
+        self.user.set_password("testpassword")
 
     def test_set_password(self):
         # Test the set_password method
-        self.user.set_password('newpassword')
-        self.assertNotEqual(self.user.password_hash, 'newpassword')
-        self.assertTrue(check_password_hash(self.user.password_hash, 'newpassword'))
+        self.user.set_password("newpassword")
+        self.assertNotEqual(self.user.password_hash, "newpassword")
+        self.assertTrue(check_password_hash(self.user.password_hash, "newpassword"))
 
     def test_check_password(self):
         # Test the check_password method
-        self.assertTrue(self.user.check_password('testpassword'))
-        self.assertFalse(self.user.check_password('wrongpassword'))
+        self.assertTrue(self.user.check_password("testpassword"))
+        self.assertFalse(self.user.check_password("wrongpassword"))
 
     def test_str_representation(self):
         # Test the __str__ method
@@ -127,8 +128,8 @@ class ModelTestCase(unittest.TestCase):
 
     def test_post(self):
         # Test the creation of a Post object
-        post = Post(body='Test post', author=self.user)
-        self.assertEqual(post.body, 'Test post')
+        post = Post(body="Test post", author=self.user)
+        self.assertEqual(post.body, "Test post")
         self.assertEqual(post.author, self.user)
 
     def test_rating(self):
@@ -139,14 +140,15 @@ class ModelTestCase(unittest.TestCase):
 
     def test_comment(self):
         # Test the creation of a PostComment object
-        comment = PostComment(body='Test comment', commentator=self.user)
-        self.assertEqual(comment.body, 'Test comment')
+        comment = PostComment(body="Test comment", commentator=self.user)
+        self.assertEqual(comment.body, "Test comment")
         self.assertEqual(comment.commentator, self.user)
 
     def test_favorite(self):
         # Test the creation of a Favorite object
         favorite = Favorite(fan=self.user)
         self.assertEqual(favorite.fan, self.user)
+
 
 class FormTestCase(unittest.TestCase):
     def setUp(self):
@@ -164,7 +166,7 @@ class FormTestCase(unittest.TestCase):
 
     def test_comment_form(self):
         with self.app.test_request_context():
-            form = CommentForm()            
+            form = CommentForm()
             self.assertIsInstance(form.body, TextAreaField)
             self.assertIsInstance(form.submit, SubmitField)
 
@@ -172,7 +174,6 @@ class FormTestCase(unittest.TestCase):
         with self.app.test_request_context():
             form = FavoriteForm()
             self.assertIsInstance(form.favorite, SubmitField)
-
 
     def test_login_form(self):
         with self.app.test_request_context():
@@ -188,13 +189,11 @@ class FormTestCase(unittest.TestCase):
             self.assertIsInstance(form.body, TextAreaField)
             self.assertIsInstance(form.submit, SubmitField)
 
-
     def test_rate_form(self):
         with self.app.test_request_context():
             form = RateForm()
             self.assertIsInstance(form.rate, IntegerRangeField)
             self.assertIsInstance(form.submit, SubmitField)
-
 
     def test_registration_form(self):
         with self.app.test_request_context():
@@ -204,6 +203,7 @@ class FormTestCase(unittest.TestCase):
             self.assertIsInstance(form.password, PasswordField)
             self.assertIsInstance(form.password2, PasswordField)
             self.assertIsInstance(form.submit, SubmitField)
+
 
 class UserManagerTestCase(unittest.TestCase):
     def setUp(self):
@@ -264,6 +264,7 @@ class UserManagerTestCase(unittest.TestCase):
             # Send a GET request to the logout route
             response = self.client.get("/logout", follow_redirects=True)
             self.assertEqual(response.status_code, 401)
+
 
 class DataManagerTestCase(unittest.TestCase):
     def setUp(self):
@@ -343,6 +344,7 @@ class DataManagerTestCase(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
 
+
 class RoutesTestCase(unittest.TestCase):
     def setUp(self):
         self.app = app
@@ -350,7 +352,7 @@ class RoutesTestCase(unittest.TestCase):
         self.app_context.push()
         app.testing = True
         self.client = app.test_client()
-        self.movie=1
+        self.movie = 1
         db.create_all()
 
         # Create a test user for authentication
@@ -358,8 +360,8 @@ class RoutesTestCase(unittest.TestCase):
         user.set_password("password")
         db.session.add(user)
         db.session.commit()
-        self.user=user
-    
+        self.user = user
+
     def tearDown(self):
         db.session.remove()
         db.drop_all()
@@ -386,7 +388,7 @@ class RoutesTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_post(self):
-        post = Post(body='Test post', author=self.user, movie_id=self.movie)
+        post = Post(body="Test post", author=self.user, movie_id=self.movie)
         db.session.add(post)
         db.session.commit()
 
@@ -404,6 +406,7 @@ class RoutesTestCase(unittest.TestCase):
     def test_all_rates(self):
         response = self.client.get(f"/rates/{self.user.id}")
         self.assertEqual(response.status_code, 200)
+
 
 if __name__ == "__main__":
     unittest.main()
