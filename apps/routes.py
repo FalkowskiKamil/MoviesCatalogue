@@ -74,12 +74,12 @@ def search():
     The movies matching the search query are retrieved from tmdb_client.
 
     Returns:
-        The rendered search_results.html template with the search results and search_query.
+        The rendered search.html template with the search results and search_query.
     """
-    search_query = request.args.get("query", "")
-    movies = tmdb_client.search_movies(search_query)
+    search_query = request.args.get("q", "")
+    movies = tmdb_client.search_movie(search_query=search_query)["results"]
     return render_template(
-        "search_results.html", movies=movies, search_query=search_query
+        "search.html", movies=movies, search_query=search_query
     )
 
 
