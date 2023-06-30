@@ -4,3 +4,4 @@ Include/
 instance/
 migrations/
 myenv/
+__pycache__/
