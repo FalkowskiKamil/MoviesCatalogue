@@ -14,7 +14,8 @@ Football_Quiz is built using the following technologies:
 - Framework: Flask
 - Handling forms and form validation: Flask WTF
 - Database: TMDB
-- Deployment and Management: Docker
+- Testing: Pytest, Selenium
+- Deployment and Management: Docker, Kubernetes
 
 ## Installation
 
