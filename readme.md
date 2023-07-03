@@ -2,11 +2,6 @@
 
 This is a Flask application that fetch movie data from TMDB (The Movie Database) API. The application provides various functionalities related to movies, including fetching popular movies, searching for movies, retrieving movie details, displaying movie posters, and more.
 
-## View
-
-[Movies Catalogue is available on heroku (click)](https://tmdbflaskapp-062ece8d6d6e.herokuapp.com/)
-
-
 ## Technology Stack
 
 Football_Quiz is built using the following technologies:
