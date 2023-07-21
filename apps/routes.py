@@ -57,8 +57,8 @@ def movie_details(movie_id):
     if models["rate"]:
         mean = [x.rate for x in models["rate"]]
         models["mean"] = sum(mean) / len(mean)
-    if tmdb["cast"] is not None and len(tmdb["cast"]) > 9:
-        tmdb["cast"] = tmdb["cast"][:10]
+    if tmdb["cast"] is not None and len(tmdb["cast"]) > 11:
+        tmdb["cast"] = tmdb["cast"][:12]
     if tmdb_client.get_movie_images(movie_id):
         selected_backdrop = random.choice(tmdb_client.get_movie_images(movie_id))
         models["selected_backdrop"] = selected_backdrop["file_path"]
