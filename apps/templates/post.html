@@ -1,42 +1,40 @@
 {% extends "index.html" %}
-
 {% block content %}
-<div class="container">
-    <h1 class="text-center">Post by <a href="{{url_for('user', user_id=post.author.id)}}" class="text-decoration-none">{{post.author.username|capitalize}}</a></h1>
-    <div class="card border">
-        <div class="card-body">
-            <h1 class="card-text">{{post.body}}</h1> <!-- Displays the content of the post -->
-        </div>
-        <div class="card-footer">
-            <p class="card-title">About movie: <a href="{{ url_for('movie_details', movie_id=post.movie_id)}}" class="text-decoration-none">{{movie_from_id(post.movie_id).original_title}}</a>, created on {{post.created}}</p> <!-- Displays information about the movie associated with the post -->
-        </div>
-    </div>
-
-    {% for com in comment %}
-        <div class="card border mt-4">
-            <div class="card-body">
-                <p class="card-text">{{com.body}}</p> <!-- Displays the content of each comment -->
-            </div>
-            <div class="card-footer">
-                <p class="card-text">Author: <a href="{{url_for('user', user_id=com.commentator.id)}}" class="text-decoration-none">{{com.commentator.username|capitalize}}</a></p> <!-- Displays the username of the commentator and provides a link to their user profile -->
-            </div>
-        </div>
-    {% endfor %}
-
-    {% if current_user.is_authenticated %}
-        <form action="{{ url_for('add_comment', post_id=post.id) }}" method="post">
-            {{ form.csrf_token }}
-            <div class="form-group mt-4">
-                <label for="comment">Add comment:</label>
-                {{ form.body(cols=50, rows=4, class="form-control") }} <!-- Renders a text area for the user to enter their comment -->
-                {% for error in form.body.errors %}
-                    <span style="color: red;">[{{ error }}]</span> <!-- Displays any validation errors for the comment input -->
-                {% endfor %}
-            </div>
-            <button type="submit" class="btn btn-primary">Submit</button> <!-- Renders a submit button for adding the comment -->
-        </form>
-    {% else %}
-        <p class="mt-4">Please <a href="{{url_for('login')}}" class="text-decoration-none">log in</a> to add a comment.</p> <!-- Displays a message to prompt the user to log in if they want to add a comment -->
-    {% endif %}
+<div class="border border-5 card rounded rounded-3 shadow p-5">
+   <header class="text-center mb-4 display-4">
+      About movie: <a class="link-secondary text-decoration-none" href="{{ url_for('movie_details', movie_id=post.movie_id) }}">{{movie_from_id(post.movie_id).title}}</a>
+   </header>
+   <main class="p-2">
+      <!--Main Post-->
+      <section>
+         <a class="link-secondary" href="{{url_for('user', user_id=post.author.id)}}">~{{post.author.username|capitalize}}</a>
+         <span class="small ms-2">{{post.created}}</span>
+         {% if current_user.is_authenticated %}
+         <a class="btn btn-outline-dark btn-sm" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+            Reply
+         </a>
+         {% endif %}
+         <blockquote class="blockquote border-bottom border-2 p-3">
+            {{post.body}}
+         </blockquote>
+      </section>
+      <!--Comment Section-->
+      {% for com in comment %}
+      <section class="flex-start mt-4 ps-4">
+         <a class="link-secondary" href="{{url_for('user', user_id=com.commentator.id)}}">~{{com.commentator.username|capitalize}}</a>
+         <span class="small ms-2">{{com.created}}</span>
+         <blockquote class="blockquote small mt-1">
+            {{com.body}}
+         </blockquote>
+      </section>
+      {% endfor %}
+      <!--Comment Form-->
+      <section class="collapse mt-4" id="collapseExample">
+         <form action="{{ url_for('add_comment', post_id=post.id) }}" method="post">
+            {{ form.body }}
+            <button type="submit" class="px-auto btn btn-dark mt-2">Submit</button>
+         </form>
+      </section>
+   </main>
 </div>
 {% endblock %}

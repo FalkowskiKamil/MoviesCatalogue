@@ -1,0 +1,26 @@
+{% extends "index.html" %}
+
+{% block content %}
+<div class="border border-5 card rounded rounded-3 shadow p-5 max-w-50 mx-auto">
+  <header class="text-center mb-4 display-4">
+    {% if login %}
+      <h1>Sign In</h1>
+      <p class="mb-3">New User? <a href="{{ url_for('register') }}">Click to Register!</a></p>
+    {% else %}
+      <h1>Sign Up</h1>
+      <p class="mb-3">Already a User? <a href="{{ url_for('login') }}">Click to Login!</a></p>
+    {% endif %}
+  </header>
+  <main>
+    <form method="post">
+      {% for field in form %}
+        <div class="form-outline mb-4">
+          {{ field.label }}
+          {{ field(class='form-control w-100') }} {# Adding w-100 class to make the form elements take full width #}
+        </div>
+      {% endfor %}
+      <button class="btn btn-dark" type="submit">Login</button>
+    </form>
+  </main>
+</div>
+{% endblock %}

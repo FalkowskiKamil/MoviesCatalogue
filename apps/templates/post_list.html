@@ -1,0 +1,22 @@
+{% extends "index.html" %}
+{% block content %}
+<div class="border border-5 card rounded rounded-3 shadow p-5">
+   <header class="text-center mb-4">
+      <h1 class="display-4">{{head}}</h1>
+   </header>
+   <main class="p-2">
+      {% for post in posts %}
+      <section class="my-4 p-2">
+         <a class="link-secondary" href="{{ url_for('user', user_id=post.author.id) }}">~{{ post.author.username|capitalize }} </a>
+         <a class="text-decoration-none text-dark" href="{{ url_for('post', post_id=post.id) }}">
+         <span class="small ms-2">{{post.created}}</span>
+         <span>Comment: {{ post.comment.all()|length }}</span>
+         <blockquote class="blockquote border-bottom border-2 p-3">
+            {{post.body}}
+         </blockquote>
+         </a>
+      </section>
+      {% endfor %}
+   </main>
+</div>
+{% endblock %}
