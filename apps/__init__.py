@@ -19,5 +19,4 @@ from . import (
     user_manager,
     data_manager,
     tmdb_client,
-    test_tmdb_client,
 )

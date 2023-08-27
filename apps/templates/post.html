@@ -10,9 +10,9 @@
          <a class="link-secondary" href="{{url_for('user', user_id=post.author.id)}}">~{{post.author.username|capitalize}}</a>
          <span class="small ms-2">{{post.created}}</span>
          {% if current_user.is_authenticated %}
-         <a class="btn btn-outline-dark btn-sm" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
-            Reply
-         </a>
+            <a class="btn btn-outline-dark btn-sm" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+               Reply
+            </a>
          {% endif %}
          <blockquote class="blockquote border-bottom border-2 p-3">
             {{post.body}}
@@ -20,13 +20,13 @@
       </section>
       <!--Comment Section-->
       {% for com in comment %}
-      <section class="flex-start mt-4 ps-4">
-         <a class="link-secondary" href="{{url_for('user', user_id=com.commentator.id)}}">~{{com.commentator.username|capitalize}}</a>
-         <span class="small ms-2">{{com.created}}</span>
-         <blockquote class="blockquote small mt-1">
-            {{com.body}}
-         </blockquote>
-      </section>
+         <section class="flex-start mt-4 ps-4">
+            <a class="link-secondary" href="{{url_for('user', user_id=com.commentator.id)}}">~{{com.commentator.username|capitalize}}</a>
+            <span class="small ms-2">{{com.created}}</span>
+            <blockquote class="blockquote small mt-1">
+               {{com.body}}
+            </blockquote>
+         </section>
       {% endfor %}
       <!--Comment Form-->
       <section class="collapse mt-4" id="collapseExample">

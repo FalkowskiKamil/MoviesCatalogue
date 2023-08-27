@@ -1,122 +1,119 @@
 {% extends "index.html" %}
 {% block content %}
-        <!-- Movie info -->
-        {% if tmdb.movie.title %}
-         <header class="text-center">
-            <h1 class="display-1 fw-bold my-4">{{ tmdb.movie.title }}</h1>
-         </header>
-         <main>
-            <div class="row align-items-center">
-               <div class="col-md-8 col-sm-12 col-lg-6">
-                  <img class="img-fluid mb-4" src="{{ tmdb_image_url(models['selected_backdrop'], 'w780') }}" alt="{{ tmdb.movie.title }}">
-               </div>
-               <!--Movie detail list-->
-               <div class="col-md-4 col-sm-12 col-lg-6 text-center border border-5 card rounded rounded-3 shadow p-4">
-                  <dl class="row">
-                     <dt class="col-md-6 col-sm-6 col-lg-3">Runtime: </dt>
-                        <dd class="col-md-6 col-sm-6 col-lg-3">{{ tmdb.movie.runtime }} min</dd>
-                     <dt class="col-md-6 col-sm-6 col-lg-3">Genre: </dt>
-                        <dd class="col-md-6 col-sm-6 col-lg-3">
-                           {% for genre in tmdb.movie.genres %}
-                                 {{ genre.name }}{% if not loop.last %}, {% endif %}
-                           {% endfor %}
-                        </dd>
-                     <dt class="col-md-6 col-sm-6 col-lg-3">Original language: </dt>
-                        <dd class="col-md-6 col-sm-6 col-lg-3">{{ tmdb.movie.original_language }}</dd>
-                     <dt class="col-md-6 col-sm-6 col-lg-3">Rating: </dt>
-                        <dd class="col-md-6 col-sm-6 col-lg-3" >{{ models['mean'].0 }} / 10 ({{ models['mean'].1 }} vote)</dd>
-                  </dl>
-                  <!-- Forms -->
-                  {% if current_user.is_authenticated %}
-                  <div class="row">
-                  <!-- Rate form -->
-                     <form class="col-md-12 col-sm-6 col-lg-6" action="{{ url_for('add_rate', movie_id=tmdb.movie.id) }}" method='post'>
-                        {{ forms.rate_form.rate(class="range", list="tickmarks", value= models['user_rate'].first().rate or 6 , oninput="rangeValue.innerText = this.value", id="rate") }}
-                        <datalist id="tickmarks">
-                           {% for i in range(1, 11) %}
-                                 <option value="{{ i }}" label="{{ i }}">{{ i }}</option>
-                           {% endfor %}
-                        </datalist>
-                        <p value="{{models['user_rate'].first().rate}}" id="rangeValue">actual rate: {{models['user_rate'].first().rate or 6}}</p>
-                        {{ forms.rate_form.submit }}
-                     </form>
-                  <!-- Fav form -->
-                     <form class="col-md-12 col-sm-6 col-lg-6 mt-4" action="{{ url_for('add_favorite', movie_id=tmdb.movie.id) }}" method="POST">
-                        {{ forms.favorite_form.favorite}}
-                     </form>
-                  </div>
-               </div>
-            {% endif %}
+<!-- Movie info -->
+{% if tmdb.movie.title %}
+<header class="text-center">
+	<h1 class="display-1 fw-bold my-4">{{ tmdb.movie.title }}</h1>
+</header>
+<main class="p-2">
+	<div class="row align-items-center p-2">
+		<div class="col-md-8 col-sm-12 col-lg-6">
+			<img class="img-fluid mb-4" src="{{ tmdb_image_url(models['selected_backdrop'], 'w780') }}" alt="{{ tmdb.movie.title }}">
+		</div>
+		<!--Movie detail list-->
+		<div class="col-md-4 col-sm-12 col-lg-6 text-center border border-5 card rounded rounded-3 shadow p-4 mb-2">
+			<dl class="row align-items-center">
+				<dt class="col-md-6 col-sm-6 col-lg-3">Runtime: </dt>
+				<dd class="col-md-6 col-sm-6 col-lg-3">{{ tmdb.movie.runtime }} min</dd>
+				<dt class="col-md-6 col-sm-6 col-lg-3">Genre: </dt>
+				<dd class="col-md-6 col-sm-6 col-lg-3">
+					{% for genre in tmdb.movie.genres %}
+					   {{ genre.name }}{% if not loop.last %}, {% endif %}
+					{% endfor %}
+				</dd>
+				<dt class="col-md-6 col-sm-6 col-lg-3">Original language: </dt>
+				<dd class="col-md-6 col-sm-6 col-lg-3">{{ tmdb.movie.original_language }}</dd>
+				<dt class="col-md-6 col-sm-6 col-lg-3">Rating: </dt>
+				<dd class="col-md-6 col-sm-6 col-lg-3" >{{ models['mean'].0 }} / 10 ({{ models['mean'].1 }} vote)</dd>
+			</dl>
+			<!-- Forms -->
+			{% if current_user.is_authenticated %}
+			<div class="row">
+				<!-- Rate form -->
+				<form class="col-md-12 col-sm-6 col-lg-6" action="{{ url_for('add_rate', movie_id=tmdb.movie.id) }}" method='post'>
+					{{ forms.rate_form.rate(class="range", list="tickmarks", value= models['user_rate'].first().rate or 6 , oninput="rangeValue.innerText = this.value", id="rate") }}
+					<datalist id="tickmarks">
+						{% for i in range(1, 11) %}
+						<option value="{{ i }}" label="{{ i }}">{{ i }}</option>
+						{% endfor %}
+					</datalist>
+					<p value="{{models['user_rate'].first().rate}}" id="rangeValue">actual rate: {{models['user_rate'].first().rate or 6}}</p>
+					{{ forms.rate_form.submit }}
+				</form>
+				<!-- Fav form -->
+				<form class="col-md-12 col-sm-6 col-lg-6 mt-4" action="{{ url_for('add_favorite', movie_id=tmdb.movie.id) }}" method="POST">
+					{{ forms.favorite_form.favorite}}
+				</form>
+			</div>
+		</div>
+		{% endif %}
+	</div>
+	<div class="border border-5 card rounded rounded-3 shadow p-2">
+		<h2 class="my-4 display-4 fw-bold text-center card-title p-4">{{ tmdb.movie.tagline }}</h2>
+		<p class="card-text p-4">{{ tmdb.movie.overview }}</p>
+	</div>
+</main>
+{% else %}
+<!--No data case-->
+<header>
+	<h1 class="display-1 fw-bold my-4">Sorry, there is no detailed information about this movie in our database</h1>
+</header>
+{% endif %}
+<!-- Cast -->
+{% if tmdb.cast %}
+   <section class="container text-center">
+      <h3 class="my-4 display-2 fw-bold">Cast</h3>
+      <div class="row">
+         {% for actor in tmdb.cast %}
+         <div class="col-md-3 col-sm-6 mb-4">
+            <figure class="card">
+               {% if actor.profile_path %}
+               <img src="{{ tmdb_image_url(actor.profile_path, 'w185') }}" class="card-img-top" alt="{{ actor.name }}">
+               {% else %}
+               <img src="https://placehold.it/185x278?text={{ actor.name }}" class="card-img-top" alt="{{ actor.name }}">
+               {% endif %}
+               <figcaption class="card-body">
+                  <h4 class="card-title">{{ actor.name }}</h4>
+                  <p class="card-text">{{ actor.character }}</p>
+               </figcaption>
+            </figure>
+         </div>
+         {% endfor %}
+      </div>
+   </section>
+{% endif %}
+<!-- Reviews -->
+{% if models["post"] %}
+   <section class="border border-5 card rounded rounded-3 shadow p-2">
+      <div class="text-center mb-4 ">
+         <h2 class="display-2 fw-bold">Reviews</h2>
+      </div>
+      {% for post in models["post"] %}
+         {% if loop.index <= 5 %}
+            <div class="my-2 p-2">
+               <a class="link-secondary" href="{{ url_for('user', user_id=post.author.id) }}">~{{ post.author.username|capitalize }} </a>
+               <a class="text-decoration-none text-dark" href="{{ url_for('post', post_id=post.id) }}">
+                  <span class="small ms-2">{{post.created}}</span>
+                  <span>Comment: {{ post.comment.all()|length }}</span>
+                  <blockquote class="blockquote border-bottom border-2 p-3">
+                     {{post.body}}
+                  </blockquote>
+               </a>
             </div>
-            <div class="border border-5 card rounded rounded-3 shadow p-2">
-               <h2 class="my-4 display-4 fw-bold text-center card-title p-4">{{ tmdb.movie.tagline }}</h2>
-               <p class="card-text p-4">{{ tmdb.movie.overview }}</p>
-            </div>
-         </main>
-         {% else %}
-         <!--No data case-->
-         <header>
-            <h1 class="display-1 fw-bold my-4">Sorry, there is no detailed information about this movie in our database</h1>
-         </header>
-        {% endif %}
-
-        <!-- Cast -->
-        {% if tmdb.cast %}
-         <section class="container text-center">
-            <h3 class="my-4 display-2 fw-bold">Cast</h3>
-            <div class="row">
-               {% for actor in tmdb.cast %}
-                  <div class="col-md-3 col-sm-6 mb-4">
-                        <figure class="card">
-                           {% if actor.profile_path %}
-                              <img src="{{ tmdb_image_url(actor.profile_path, 'w185') }}" class="card-img-top" alt="{{ actor.name }}">
-                           {% else %}
-                              <img src="https://placehold.it/185x278?text={{ actor.name }}" class="card-img-top" alt="{{ actor.name }}">
-                           {% endif %}
-                           <figcaption class="card-body">
-                              <h4 class="card-title">{{ actor.name }}</h4>
-                              <p class="card-text">{{ actor.character }}</p>
-                           </figcaption>
-                        </figure>
-                  </div>
-               {% endfor %}
-            </div>
-         </section>
-        {% endif %}
-
-        <!-- Reviews -->
-        {% if models["post"] %}
-            <section class="border border-5 card rounded rounded-3 shadow p-2">
-               <div class="text-center mb-4 "> 
-                  <h2 class="display-2 fw-bold">Reviews</h2>
-               </div> 
-                  {% for post in models["post"] %}
-                     {% if loop.index <= 5 %}
-                           <div class="my-2 p-2">
-                              <a class="link-secondary" href="{{ url_for('user', user_id=post.author.id) }}">~{{ post.author.username|capitalize }} </a>
-                              <a class="text-decoration-none text-dark" href="{{ url_for('post', post_id=post.id) }}">
-                              <span class="small ms-2">{{post.created}}</span>
-                              <span>Comment: {{ post.comment.all()|length }}</span>
-                              <blockquote class="blockquote border-bottom border-2 p-3">
-                                 {{post.body}}
-                              </blockquote>
-                              </a>
-                           </div>
-                     {% elif loop.index == 6 %}
-                           <a href="{{ url_for('movie_post', movie_id=tmdb.movie.id, user_id=0) }}" class="px-auto btn btn-dark mt-2">See more reviews...</a>
-                     {% endif %}
-                  {% endfor %}
-            </section>
-        {% endif %}
-         
-        <!-- Forms Review -->
-        {% if current_user.is_authenticated %}
-            <section class="mt-4 text-center">
-                <h2 class="display-2 fw-bold">Write a Review</h2>
-                <form action="{{ url_for('add_post', movie_id=tmdb.movie.id) }}" method="post">
-                    {{ forms.post_form.body}}
-                    <button type="submit" class="px-auto btn btn-dark mt-2">Submit</button>
-               </form>
-            </section>
-        {% endif %}
+         {% elif loop.index == 6 %}
+         <a href="{{ url_for('movie_post', movie_id=tmdb.movie.id, user_id=0) }}" class="px-auto btn btn-dark mt-2">See more reviews...</a>
+         {% endif %}
+      {% endfor %}
+   </section>
+   {% endif %}
+   <!-- Forms Review -->
+   {% if current_user.is_authenticated %}
+   <section class="mt-4 text-center">
+      <h2 class="display-2 fw-bold">Write a Review</h2>
+      <form action="{{ url_for('add_post', movie_id=tmdb.movie.id) }}" method="post">
+         {{ forms.post_form.body}}
+         <button type="submit" class="px-auto btn btn-dark mt-2">Submit</button>
+      </form>
+   </section>
+{% endif %}
 {% endblock %}

@@ -1,5 +1,4 @@
 {% extends "index.html" %}
-
 {% block content %}
 <div class="d-flex align-items-center justify-content-center">
   <main class="border border-5 card rounded rounded-3 shadow p-5 p-5 m-5 w-50">
@@ -13,9 +12,9 @@
       {% endif %}
     </header>
     <section>
-      <form method="post">
+      <form method="post" class="text-center">
         {% for field in form %}
-          <div class="form-outline mb-4">
+          <div class="form-outline mb-4 p-1">
             {{ field.label }}
             {{ field(class='form-control w-100') }} {# Adding w-100 class to make the form elements take full width #}
           </div>

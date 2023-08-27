@@ -6,14 +6,14 @@
    </header>
    <main class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 text-center p-2">
       {% for movie in movies %}
-      <section class="my-4 p-2">
-         <a class="link-secondary"href="{{ url_for('movie_details', movie_id=movie.movie_id) }}">
-            <h2>{{ movie_from_id(movie_id=movie.movie_id).title[:10] }}
-               {{ movie.rate }}/10
-            </h2>
-            <img alt="{{ movie_from_id(movie_id=movie.movie_id).title }}" class="img-fluid w-100" src="{{ tmdb_image_url(movie_from_id(movie_id=movie.movie_id).poster_path, 'w780') }}">
-         </a>
-      </section>
+         <section class="my-4 p-2">
+            <a class="link-secondary"href="{{ url_for('movie_details', movie_id=movie.movie_id) }}">
+               <h2>{{ movie_from_id(movie_id=movie.movie_id).title[:10] }}
+                  {{ movie.rate }}/10
+               </h2>
+               <img alt="{{ movie_from_id(movie_id=movie.movie_id).title }}" class="img-fluid w-100" src="{{ tmdb_image_url(movie_from_id(movie_id=movie.movie_id).poster_path, 'w780') }}">
+            </a>
+         </section>
       {% endfor %}
    </main>
 </div>

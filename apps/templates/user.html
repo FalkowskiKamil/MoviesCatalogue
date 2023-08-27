@@ -5,49 +5,46 @@
         <h1>Profile: {{ user.username|capitalize }}</h1>
         <p class="small ms-2">Created on {{ user.joined_at }}</p>
     </header>
-
     <section class="border-bottom border-2 p-3 m-3 text-center">
-        <div class=" justify-content-center">
+        <div class="justify-content-center">
             {% if fav %}
-            <div class="col">
-                <h2><a class="link-secondary text-decoration-none" href="{{ url_for('favorite', user_id=user.id) }}">List of favorite movies ({{ fav }} movie)</a></h3>
-            </div>
+                <div class="col">
+                    <h2><a class="link-secondary text-decoration-none" href="{{ url_for('favorite', user_id=user.id) }}">List of favorite movies ({{ fav }} movie)</a></h3>
+                </div>
             {% endif %}
         </div>
     </section>
-
     <section class="border-bottom border-2 p-3 m-2 text-center">
         {% if rating %}
-        <div class="row text-center">
-            <h2 class="mb-2"><a class="link-secondary text-decoration-none" href="{{ url_for('all_rates', user_id=user.id) }}">Mean rate: {{ rating[3] }} ({{ rating[2] }} movie)</a></h3>
-            <div class="col ">
-                <h3>Highest rated movie:</h3>
-                <a class= "link-secondary text-decoration-none" href="{{ url_for('movie_details', movie_id=rating[1].movie_id) }}">
-                <img alt="{{ movie_from_id(movie_id=rating[1].movie_id).title }}" class="img-fluid w-50 rounded" src="{{ tmdb_image_url(movie_from_id(movie_id=rating[1].movie_id).poster_path, 'w780') }}">
-                <p>{{ movie_from_id(movie_id=rating[1].movie_id).original_title }} ({{ rating[1].rate }}/10)</p>
-                </a> 
+            <div class="row text-center">
+                <h2 class="mb-2"><a class="link-secondary text-decoration-none" href="{{ url_for('all_rates', user_id=user.id) }}">Mean rate: {{ rating[3] }} ({{ rating[2] }} movie)</a></h3>
+                <div class="col ">
+                    <h3>Highest rated movie:</h3>
+                    <a class= "link-secondary text-decoration-none" href="{{ url_for('movie_details', movie_id=rating[1].movie_id) }}">
+                    <img alt="{{ movie_from_id(movie_id=rating[1].movie_id).title }}" class="img-fluid w-50 rounded" src="{{ tmdb_image_url(movie_from_id(movie_id=rating[1].movie_id).poster_path, 'w780') }}">
+                    <p>{{ movie_from_id(movie_id=rating[1].movie_id).original_title }} ({{ rating[1].rate }}/10)</p>
+                    </a> 
+                </div>
+                <div class="col">
+                    <h3>Lowest rated movie:</h3>
+                    <a class= "link-secondary text-decoration-none" href="{{ url_for('movie_details', movie_id=rating[0].movie_id) }}">
+                    <img alt="{{ movie_from_id(movie_id=rating[0].movie_id).title }}" class="img-fluid w-50 rounded" src="{{ tmdb_image_url(movie_from_id(movie_id=rating[0].movie_id).poster_path, 'w780') }}">
+                    <p>{{ movie_from_id(movie_id=rating[0].movie_id).original_title }} ({{ rating[0].rate }}/10)</p>
+                    </a>
+                </div>
             </div>
-            <div class="col">
-                <h3>Lowest rated movie:</h3>
-                <a class= "link-secondary text-decoration-none" href="{{ url_for('movie_details', movie_id=rating[0].movie_id) }}">
-                <img alt="{{ movie_from_id(movie_id=rating[0].movie_id).title }}" class="img-fluid w-50 rounded" src="{{ tmdb_image_url(movie_from_id(movie_id=rating[0].movie_id).poster_path, 'w780') }}">
-                <p>{{ movie_from_id(movie_id=rating[0].movie_id).original_title }} ({{ rating[0].rate }}/10)</p>
-                </a>
-            </div>
-        </div>
         {% endif %}
     </section>
-
     <section class="border-bottom border-2 p-3 mt-3 text-center">
         {% if post %}
-        <a class="link-secondary text-decoration-none" href="{{ url_for('post', post_id=post[0].id) }}">
-            <h3>Last Post ({{ post[0].created }}):</h3>
-            <blockquote class="blockquote small mt-1 fst-italic">
-            "{{ post[0].body }}""
-            </blockquote>
-        </a>
-        <p>About: <a class="link-secondary text-decoration-none" href="{{ url_for('movie_details', movie_id=post[0].movie_id) }}">{{ movie_from_id(post[0].movie_id).original_title }}</a></p>
-        <h2><a class="link-secondary text-decoration-none" href="{{ url_for('movie_post', movie_id=0, user_id=user.id) }}">All posts ({{ post|length }})</a></h2>
+            <a class="link-secondary text-decoration-none" href="{{ url_for('post', post_id=post[0].id) }}">
+                <h3>Last Post ({{ post[0].created }}):</h3>
+                <blockquote class="blockquote small mt-1 fst-italic">
+                "{{ post[0].body }}""
+                </blockquote>
+            </a>
+            <p>About: <a class="link-secondary text-decoration-none" href="{{ url_for('movie_details', movie_id=post[0].movie_id) }}">{{ movie_from_id(post[0].movie_id).original_title }}</a></p>
+            <h2><a class="link-secondary text-decoration-none" href="{{ url_for('movie_post', movie_id=0, user_id=user.id) }}">All posts ({{ post|length }})</a></h2>
         {% endif %}
     </section>
 </div>

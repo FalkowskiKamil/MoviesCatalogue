@@ -5,33 +5,31 @@
    <p class="display-5 fw-light">You find here only the best titles!</p>
 </header>
 {% if current_list %}
-<section class="text-center my-2">
-   <ul class="list-inline">
-      <li class="list-inline-item py-2"><a class="btn btn-dark {% if current_list == 'popular' %} active {% endif %}" href="{{ url_for('homepage', list_type='popular') }}">Popular</a></li>
-      <li class="list-inline-item py-2"><a class="btn btn-dark {% if current_list == 'now_playing' %} active {% endif %}" href="{{ url_for('homepage', list_type='now_playing') }}">Now Playing</a></li>
-      <li class="list-inline-item py-2"><a class="btn btn-dark {% if current_list == 'top_rated' %} active {% endif %}" href="{{ url_for('homepage', list_type='top_rated') }}">Top Rated</a></li>
-      <li class="list-inline-item py-2"><a class="btn btn-dark {% if current_list == 'upcoming' %} active {% endif %}" href="{{ url_for('homepage', list_type='upcoming') }}">Upcoming</a></li>
-      <li class="list-inline-item py-2"><a class="btn btn-dark {% if current_list == 'today' %} active {% endif %}" href="{{ url_for('homepage', list_type='today') }}">Today</a></li>
-   </ul>
-</section>
+  <section class="text-center my-2">
+    <ul class="list-inline">
+        <li class="list-inline-item py-2"><a class="btn btn-dark {% if current_list == 'popular' %} active {% endif %}" href="{{ url_for('homepage', list_type='popular') }}">Popular</a></li>
+        <li class="list-inline-item py-2"><a class="btn btn-dark {% if current_list == 'now_playing' %} active {% endif %}" href="{{ url_for('homepage', list_type='now_playing') }}">Now Playing</a></li>
+        <li class="list-inline-item py-2"><a class="btn btn-dark {% if current_list == 'top_rated' %} active {% endif %}" href="{{ url_for('homepage', list_type='top_rated') }}">Top Rated</a></li>
+        <li class="list-inline-item py-2"><a class="btn btn-dark {% if current_list == 'upcoming' %} active {% endif %}" href="{{ url_for('homepage', list_type='upcoming') }}">Upcoming</a></li>
+        <li class="list-inline-item py-2"><a class="btn btn-dark {% if current_list == 'today' %} active {% endif %}" href="{{ url_for('homepage', list_type='today') }}">Today</a></li>
+    </ul>
+  </section>
 {% endif %}
-
 <main class="container">
   {% if header %}
-  <p class="d-block">{{ header }}</p>
+    <p class="d-block">{{ header }}</p>
   {% endif %}
   <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 text-center">
     {% for movie in movies %}
-    <a aria-label="Movie Details" href="{{ url_for('movie_details', movie_id=movie.id) }}">
-    <figure class="bg-image">
-        <img alt="{{ movie.title }}" class="img-fluid w-100" src="{{ tmdb_image_url(movie.poster_path, 'w780') }}">
-        <figcaption class="mask" style="background-color: rgba(0, 0, 0, 0.9)">
-          <p class="text-white my-auto text-truncate">{{ movie.title }}</p>
-        </figcaption>
-    </figure>
-     </a>
+      <a aria-label="Movie Details" href="{{ url_for('movie_details', movie_id=movie.id) }}">
+        <figure class="bg-image">
+            <img alt="{{ movie.title }}" class="img-fluid w-100" src="{{ tmdb_image_url(movie.poster_path, 'w780') }}">
+            <figcaption class="mask" style="background-color: rgba(0, 0, 0, 0.9)">
+              <p class="text-white my-auto text-truncate">{{ movie.title }}</p>
+            </figcaption>
+        </figure>
+      </a>
     {% endfor %}
   </div>
 </main>
-
 {% endblock %}
