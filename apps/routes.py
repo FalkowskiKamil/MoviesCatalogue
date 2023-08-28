@@ -89,10 +89,9 @@ def movie_details(movie_id):
         # Count mean for sum of tmdb and movies catalogue
         rate_in_catalogue = [x.rate for x in models["rate"]]
         mean_catalogue = sum(rate_in_catalogue) / len(rate_in_catalogue)
-        if tmdb["movie"].get("vote_average"):
-            sum_rate_value = tmdb["movie"].get("vote_average") * tmdb["movie"].get("vote_count") + mean_catalogue * len(rate_in_catalogue)
-            sum_count = tmdb["movie"].get("vote_count")+len(rate_in_catalogue)
-            models["mean"] = round(sum_rate_value / sum_count, 2) , sum_count
+        sum_rate_value = tmdb["movie"].setdefault("vote_average", 0) * tmdb["movie"].setdefault("vote_count", 0) + mean_catalogue * len(rate_in_catalogue)
+        sum_count = tmdb["movie"].setdefault("vote_count", 0)+len(rate_in_catalogue)
+        models["mean"] = round(sum_rate_value / sum_count, 2) , sum_count
     else:
         models["mean"] = tmdb["movie"].get("vote_average"), tmdb["movie"].get("vote_count")
     if tmdb["cast"] is not None and len(tmdb["cast"]) > 11:
