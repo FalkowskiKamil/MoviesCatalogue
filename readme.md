@@ -8,7 +8,7 @@ This is a Flask application that fetch movie data from TMDB (The Movie Database)
 
 ## Technology Stack
 
-Football_Quiz is built using the following technologies:
+TMDB is built using the following technologies:
 
 - Framework: Flask
 - Handling forms and form validation: Flask WTF
