@@ -1,4 +1,4 @@
-# Flask Movie App with Docker Integration
+# Movies Catalogue
 
 This is a Flask application that fetch movie data from TMDB (The Movie Database) API. The application provides various functionalities related to movies, including fetching popular movies, searching for movies, retrieving movie details, displaying movie posters, and more.
 
@@ -8,11 +8,13 @@ This is a Flask application that fetch movie data from TMDB (The Movie Database)
 
 ## Technology Stack
 
-TMDB is built using the following technologies:
+Movies Catalogue is built using the following technologies:
 
 - Framework: Flask
 - Handling forms and form validation: Flask WTF
-- Database: TMDB
+- Responsive design: Bootstrap
+- User module: Flask-Login
+- Database: TMDB & SQLAlchemy
 - Testing: Pytest, Selenium
 - Deployment and Management: Docker, Kubernetes
 
@@ -31,4 +33,4 @@ Option 2:
 
 ## Contribution
 
-Contributions to TMDB_flask are welcome! If you have any ideas or improvements, feel free to submit a pull request.
+Contributions to Movies Catalogue are welcome! If you have any ideas or improvements, feel free to submit a pull request.
