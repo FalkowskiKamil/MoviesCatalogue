@@ -1,9 +1,9 @@
+from random import choice
 from flask import render_template, request
+from flask_login import current_user
 from apps import app, tmdb_client
 from apps.models import User, Post, Rating, PostComment, Favorite
 from apps.forms import PostForm, RateForm, CommentForm, FavoriteForm
-from flask_login import current_user
-import random
 
 @app.route("/")
 def homepage():
@@ -97,7 +97,7 @@ def movie_details(movie_id):
     if tmdb["cast"] is not None and len(tmdb["cast"]) > 11:
         tmdb["cast"] = tmdb["cast"][:12]
     if tmdb_client.get_movie_images(movie_id):
-        selected_backdrop = random.choice(tmdb_client.get_movie_images(movie_id))
+        selected_backdrop = choice(tmdb_client.get_movie_images(movie_id))
         models["selected_backdrop"] = selected_backdrop["file_path"]
     return render_template("movie_details.html", tmdb=tmdb, forms=forms, models=models)
 

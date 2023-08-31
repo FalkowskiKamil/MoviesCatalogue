@@ -1,8 +1,8 @@
 from flask import flash, redirect, url_for, request
+from flask_login import current_user
 from apps import app, db
 from apps.forms import PostForm, RateForm, CommentForm, FavoriteForm
 from apps.models import Post, Rating, PostComment, Favorite
-from flask_login import current_user
 
 
 @app.route("/post/<post_id>/comment", methods=["POST"])

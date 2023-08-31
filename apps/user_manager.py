@@ -1,6 +1,6 @@
 from flask import redirect, url_for, render_template, flash
-from apps import login_manager, app, db
 from flask_login import login_required, login_user, logout_user
+from apps import login_manager, app, db
 from apps.forms import RegistrationForm, LoginForm
 from apps.models import User
 
