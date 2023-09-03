@@ -1,4 +1,5 @@
 import os
+from dotenv import load_dotenv
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
@@ -9,3 +10,4 @@ class Config:
         "DATABASE_URL"
     ) or "sqlite:///" + os.path.join(BASE_DIR, "TMDB.db")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    load_dotenv()
