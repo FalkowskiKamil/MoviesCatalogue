@@ -3,7 +3,7 @@
 This is a Flask application that fetch movie data from TMDB (The Movie Database) API. The application provides various functionalities related to movies, including fetching popular movies, searching for movies, retrieving movie details, displaying movie posters, and more.
 
 ## Overview
-[You can have an overview of the functionality of the app on this site](https://moviescatalogue.falkowskikamil.site/) [Or this](http://moviescatalogue.falkowskikamil.site/)
+[You can have an overview of the functionality of the app on this site](https://moviescatalogue.falkowskikamil.site/)
 
 
 ## Technology Stack
