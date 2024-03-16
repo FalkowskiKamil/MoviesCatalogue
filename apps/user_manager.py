@@ -4,9 +4,11 @@ from apps import login_manager, app, db
 from apps.forms import RegistrationForm, LoginForm
 from apps.models import User
 
+
 @login_manager.user_loader
-def load_user(id):
-    return User.query.get(int(id))
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -22,6 +24,7 @@ def login():
             return redirect(url_for("homepage"))
     return render_template("register_login_form.html", form=form, login=True)
 
+
 @app.route("/register", methods=["GET", "POST"])
 def register():
     form = RegistrationForm()
@@ -34,6 +37,7 @@ def register():
         login_user(user=user)
         return redirect(url_for("homepage"))
     return render_template("register_login_form.html", form=form)
+
 
 @app.route("/logout")
 @login_required

@@ -65,7 +65,7 @@ def add_favorite(movie_id):
         else:
             # Toggle the existing favorite status
             favorite.status = not favorite.status
-            if favorite.status == True:
+            if favorite.status is True:
                 status = "added to"
             else:
                 status = "removed from"
